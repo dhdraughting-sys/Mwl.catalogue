@@ -1140,16 +1140,32 @@ async function exportBackup() {
   // the same one used to send a photo on WhatsApp or Messages — so it
   // can go directly to whoever needs it in one tap, with no hunting
   // through Downloads or attaching a file by hand.
+  //
+  // Some phone browsers (notably Chrome on some Android builds) only
+  // allow sharing a handful of "safe" file types and silently refuse
+  // anything else, including a plain .json file, even though the same
+  // content shared as a .txt file goes through fine. Restore doesn't
+  // care about the file's name or type at all (it just reads whatever
+  // text is inside and parses it as JSON), so it's safe to try a couple
+  // of filename/type combinations and use whichever one the phone
+  // actually agrees to share.
+  const shareCandidates = [
+    { name: filename, type: "application/json" },
+    { name: filename.replace(/\.json$/, ".txt"), type: "text/plain" },
+  ];
   try {
-    const file = new File([blob], filename, { type: "application/json" });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: "Made With Love catalogue backup",
-        text: "Made With Love catalogue backup — " + stamp,
-      });
-      showBanner("Backup shared.");
-      return;
+    if (navigator.canShare) {
+      for (const candidate of shareCandidates) {
+        const file = new File([blob], candidate.name, { type: candidate.type });
+        if (!navigator.canShare({ files: [file] })) continue;
+        await navigator.share({
+          files: [file],
+          title: "Made With Love catalogue backup",
+          text: "Made With Love catalogue backup — " + stamp,
+        });
+        showBanner("Backup shared.");
+        return;
+      }
     }
   } catch (err) {
     if (err && err.name === "AbortError") return; // she opened the share sheet and backed out - not an error

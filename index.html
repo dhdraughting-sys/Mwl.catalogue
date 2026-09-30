@@ -1159,22 +1159,17 @@ async function exportBackup() {
     { name: filename, type: "application/json" },
     { name: filename.replace(/\.json$/, ".txt"), type: "text/plain" },
   ];
-  // TEMPORARY diagnostics, while we track down why sharing isn't kicking in
-  // on some phones — shows up in the fallback banner below so we can see,
-  // from a screenshot, exactly what the phone's browser reported. Safe to
-  // remove once sharing is confirmed working everywhere.
-  const diag = { share: !!navigator.share, canShare: !!navigator.canShare, checks: [] };
   if (navigator.canShare) {
     for (const candidate of shareCandidates) {
       const file = new File([blob], candidate.name, { type: candidate.type });
-      const ok = navigator.canShare({ files: [file] });
-      diag.checks.push(candidate.type.split("/")[1] + "=" + ok);
-      if (!ok) continue;
+      if (!navigator.canShare({ files: [file] })) continue;
       // canShare() saying yes doesn't guarantee share() will actually go
       // through — some phones' browsers apply extra file-type checks at
       // share time that canShare() doesn't predict, and reject with
       // NotAllowedError even though canShare() said this file was fine.
       // Try the next candidate (e.g. .txt) instead of giving up outright.
+      // On phones where file sharing is blocked outright, every candidate
+      // fails here and we fall through to the plain download below.
       try {
         await navigator.share({
           files: [file],
@@ -1185,13 +1180,15 @@ async function exportBackup() {
         return;
       } catch (err) {
         if (err && err.name === "AbortError") return; // she opened the share sheet and backed out - not an error
-        diag.checks.push(candidate.type.split("/")[1] + ":err=" + (err && err.name ? err.name : String(err)));
         // Try the next candidate.
       }
     }
   }
 
-  // Fallback for browsers without share-with-files support (most desktop browsers).
+  // Fallback: a plain download, for browsers without share-with-files
+  // support and for phones that support the API but block it. Spell out
+  // exactly how to get the file across to Darren from here, since there's
+  // no share sheet to do it automatically.
   try {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1201,9 +1198,11 @@ async function exportBackup() {
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-    const diagText = "share=" + diag.share + " canShare=" + diag.canShare +
-      (diag.checks.length ? " [" + diag.checks.join(", ") + "]" : "");
-    showBanner("Backup downloaded. Send that file to another device and use Restore there to bring your flowers across. (debug: " + diagText + ")");
+    showBanner(
+      "Backup saved to your Downloads as “" + filename + "”. " +
+      "To send it to Darren: open WhatsApp → your chat with him → tap the paperclip → " +
+      "Document → Downloads → choose that file."
+    );
   } catch (err) {
     showBanner("Could not create a backup — try again.", true);
   }

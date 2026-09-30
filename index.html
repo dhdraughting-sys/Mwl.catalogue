@@ -1159,11 +1159,18 @@ async function exportBackup() {
     { name: filename, type: "application/json" },
     { name: filename.replace(/\.json$/, ".txt"), type: "text/plain" },
   ];
+  // TEMPORARY diagnostics, while we track down why sharing isn't kicking in
+  // on some phones — shows up in the fallback banner below so we can see,
+  // from a screenshot, exactly what the phone's browser reported. Safe to
+  // remove once sharing is confirmed working everywhere.
+  const diag = { share: !!navigator.share, canShare: !!navigator.canShare, checks: [] };
   try {
     if (navigator.canShare) {
       for (const candidate of shareCandidates) {
         const file = new File([blob], candidate.name, { type: candidate.type });
-        if (!navigator.canShare({ files: [file] })) continue;
+        const ok = navigator.canShare({ files: [file] });
+        diag.checks.push(candidate.type.split("/")[1] + "=" + ok);
+        if (!ok) continue;
         await navigator.share({
           files: [file],
           title: "Made With Love catalogue backup",
@@ -1175,6 +1182,7 @@ async function exportBackup() {
     }
   } catch (err) {
     if (err && err.name === "AbortError") return; // she opened the share sheet and backed out - not an error
+    diag.error = (err && err.name ? err.name + ": " : "") + (err && err.message ? err.message : String(err));
     // Anything else: fall through to the plain download below.
   }
 
@@ -1188,7 +1196,10 @@ async function exportBackup() {
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-    showBanner("Backup downloaded. Send that file to another device and use Restore there to bring your flowers across.");
+    const diagText = "share=" + diag.share + " canShare=" + diag.canShare +
+      (diag.checks.length ? " [" + diag.checks.join(", ") + "]" : "") +
+      (diag.error ? " error=" + diag.error : "");
+    showBanner("Backup downloaded. Send that file to another device and use Restore there to bring your flowers across. (debug: " + diagText + ")");
   } catch (err) {
     showBanner("Could not create a backup — try again.", true);
   }

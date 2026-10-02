@@ -228,6 +228,30 @@
   .sync-dot.connected { background: #3f9142; opacity: 1; }
   .sync-dot.error { background: var(--danger); opacity: 1; }
 
+  .view-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .view-tab {
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .view-tab.active { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+
+  .card-meta { font-size: 0.72rem; color: var(--ink-soft); }
+  .card-snippet {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
   .chip {
     padding: 7px 14px;
@@ -487,7 +511,12 @@
 </header>
 
 <main>
-  <div class="toolbar">
+  <div class="view-tabs" id="view-tabs">
+    <button type="button" class="view-tab active" id="view-tab-flowers" data-view="flowers">🌸 Flowers</button>
+    <button type="button" class="view-tab" id="view-tab-posts" data-view="posts">📰 Blog Posts</button>
+  </div>
+
+  <div class="toolbar" id="flowers-toolbar">
     <div class="search-wrap">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
       <input id="search-input" type="text" placeholder="Search flowers..." autocomplete="off" />
@@ -501,8 +530,19 @@
       Restore
       <input type="file" id="import-backup-input" accept="application/json,.json" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;overflow:hidden;cursor:pointer;" />
     </label>
-    <button class="btn" id="sync-settings-btn" type="button" title="Connect this app so new flowers publish to the website automatically">
+    <button class="btn" id="sync-settings-btn" type="button" title="Connect this app so new flowers and posts publish to the website automatically">
       <span id="sync-status-dot" class="sync-dot"></span> Website Sync
+    </button>
+  </div>
+
+  <div class="toolbar" id="posts-toolbar" hidden>
+    <div class="search-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="post-search-input" type="text" placeholder="Search posts..." autocomplete="off" />
+    </div>
+    <button class="btn primary" id="add-post-btn" type="button">+ Add Post</button>
+    <button class="btn" id="sync-settings-btn-posts" type="button" title="Connect this app so new flowers and posts publish to the website automatically">
+      <span id="sync-status-dot-posts" class="sync-dot"></span> Website Sync
     </button>
   </div>
 
@@ -514,6 +554,14 @@
     <div class="big">🌸</div>
     <h2>No flowers yet</h2>
     <p>Tap "+ Add Flower" to add the first one, with a photo, price, and description.</p>
+  </div>
+
+  <div class="grid" id="posts-grid" hidden></div>
+
+  <div class="empty-state" id="posts-empty-state" hidden>
+    <div class="big">📰</div>
+    <h2>No posts yet</h2>
+    <p>Tap "+ Add Post" to share your first update — it'll appear on the News page.</p>
   </div>
 </main>
 
@@ -580,6 +628,48 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="post-modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="post-modal-title">
+    <button class="modal-close" id="post-modal-close-btn" type="button" aria-label="Close">&times;</button>
+    <h2 id="post-modal-title">Add Post</h2>
+    <div class="modal-sub">Fields marked * are required.</div>
+    <form id="post-form">
+      <div class="field">
+        <label>Photo (optional)</label>
+        <div class="photo-slots">
+          <div class="photo-slot" id="post-photo-slot"><span class="slot-plus">+</span></div>
+        </div>
+        <div class="hint">Tap the square to add a photo — drag and zoom to choose what shows, same as a flower photo.</div>
+      </div>
+      <div class="field">
+        <label for="post-title-input">Title *</label>
+        <input id="post-title-input" type="text" required maxlength="100" placeholder="e.g. New envelope florals now in stock!" />
+      </div>
+      <div class="field">
+        <label for="post-body-input">Write-up *</label>
+        <textarea id="post-body-input" required maxlength="2000" placeholder="What's new — leave a blank line between paragraphs."></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="post-date-input">Date</label>
+          <input id="post-date-input" type="date" />
+        </div>
+        <div class="field">
+          <label for="post-author-input">Posted by</label>
+          <select id="post-author-input">
+            <option value="Marie">Marie</option>
+            <option value="Darren">Darren</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" id="delete-post-btn" hidden>Delete</button>
+        <button type="submit" class="btn primary" id="save-post-btn">Save Post</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="modal-backdrop crop-modal" id="crop-modal-backdrop" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="crop-modal-title">
     <button class="modal-close" id="crop-close-btn" type="button" aria-label="Cancel">&times;</button>
@@ -604,11 +694,11 @@
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sync-modal-title">
     <button class="modal-close" id="sync-close-btn" type="button" aria-label="Close">&times;</button>
     <h2 id="sync-modal-title">Website Sync</h2>
-    <div class="modal-sub" id="sync-modal-status">Not connected — flowers only save on this device until this is set up.</div>
+    <div class="modal-sub" id="sync-modal-status">Not connected — flowers and posts only save on this device until this is set up.</div>
     <div class="field">
       <label for="gh-token-input">Website access key</label>
       <input id="gh-token-input" type="password" autocomplete="off" placeholder="Paste the key Darren gave you" />
-      <div class="hint">Saved only on this phone — never sent anywhere except directly to the website whenever you add, edit or delete a flower.</div>
+      <div class="hint">Saved only on this phone — never sent anywhere except directly to the website whenever you add, edit or delete a flower or post.</div>
     </div>
     <div class="modal-actions">
       <button type="button" class="btn ghost" id="sync-disconnect-btn">Disconnect</button>
@@ -620,6 +710,7 @@
 <div class="print-root" id="print-root"></div>
 
 <script id="catalogue-data" type="application/json">[]</script>
+<script id="blog-data" type="application/json">[]</script>
 <script>// Captured first, synchronously, before anything else runs: this is the
 // canonical source of this very script, used below to re-embed it
 // verbatim into the next published version. Never reconstructed from
@@ -628,7 +719,7 @@
 // which belongs in the saved page).
 const OWN_SCRIPT_SOURCE = document.currentScript.textContent;
 
-const HEAD_HTML = "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\" />\n<title>MWL Florals Catalogue</title>\n\n<!-- App icon, for browser tabs and for \"Add to Home Screen\" / \"Install\"\n     on phone, tablet and PC. Without these, the OS falls back to a\n     generic globe/blank icon when the page is saved - see manifest.json\n     for the full icon set. All paths are relative to this file, so the\n     \"icons\" folder must sit alongside index.html on GitHub Pages. -->\n<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"icons/icon-32.png\">\n<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"icons/icon-16.png\">\n<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"icons/icon-180.png\">\n<link rel=\"manifest\" href=\"manifest.json\">\n<meta name=\"theme-color\" content=\"#8f7350\">\n<meta name=\"apple-mobile-web-app-title\" content=\"MWL Florals\">\n<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap\" rel=\"stylesheet\">\n<style>\n  :root {\n    --bg: #faf5ee;\n    --surface: #ffffff;\n    --surface-2: #f3e9dc;\n    --ink: #3b2e22;\n    --ink-soft: #8a7862;\n    --accent: #8f7350;\n    --accent-deep: #6b5539;\n    --accent-contrast: #ffffff;\n    --line: #e6dbca;\n    --warn: #a97417;\n    --warn-bg: #f6e6c8;\n    --danger: #ad4a37;\n    --danger-bg: #f5ddd5;\n    --shadow: rgba(59, 46, 34, 0.10);\n    --radius-lg: 18px;\n    --radius-md: 12px;\n    --radius-sm: 8px;\n  }\n  @media (prefers-color-scheme: dark) {\n    :root:not([data-theme=\"light\"]) {\n      --bg: #201810;\n      --surface: #2a2016;\n      --surface-2: #372a1c;\n      --ink: #f2e7d8;\n      --ink-soft: #c2ac8e;\n      --accent: #cd9f6d;\n      --accent-deep: #e2b989;\n      --accent-contrast: #241a10;\n      --line: #493a28;\n      --warn: #e0ac4f;\n      --warn-bg: #3c2f18;\n      --danger: #e08d76;\n      --danger-bg: #402620;\n      --shadow: rgba(0, 0, 0, 0.4);\n    }\n  }\n  :root[data-theme=\"dark\"] {\n    --bg: #201810;\n    --surface: #2a2016;\n    --surface-2: #372a1c;\n    --ink: #f2e7d8;\n    --ink-soft: #c2ac8e;\n    --accent: #cd9f6d;\n    --accent-deep: #e2b989;\n    --accent-contrast: #241a10;\n    --line: #493a28;\n    --warn: #e0ac4f;\n    --warn-bg: #3c2f18;\n    --danger: #e08d76;\n    --danger-bg: #402620;\n    --shadow: rgba(0, 0, 0, 0.4);\n  }\n\n  * { box-sizing: border-box; }\n  /* The `hidden` attribute's default `display:none` only wins a\n     specificity tie by cascade order \u2014 several components below\n     also set their own unconditional `display: flex`, which is an\n     equal-specificity rule that loads later and would otherwise win,\n     leaving a \"hidden\" banner/modal/select-bar actually showing.\n     Force it explicit instead of relying on cascade order. */\n  [hidden] { display: none !important; }\n  html, body { margin: 0; padding: 0; }\n  body {\n    background: var(--bg);\n    color: var(--ink);\n    font-family: \"Poppins\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif;\n    -webkit-font-smoothing: antialiased;\n    min-height: 100vh;\n  }\n  h1, h2, h3 { text-wrap: balance; margin: 0; }\n  p { margin: 0; }\n  button {\n    font-family: inherit;\n    -webkit-user-select: none;\n    user-select: none;\n    -webkit-touch-callout: none;\n    touch-action: manipulation;\n  }\n  input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }\n  ::selection { background: var(--accent); color: var(--accent-contrast); }\n\n  .eyebrow {\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: var(--ink-soft);\n  }\n\n  .topbar {\n    padding: 22px clamp(16px, 4vw, 40px) 18px;\n    background: linear-gradient(180deg, var(--surface-2), var(--bg));\n    border-bottom: 1px solid var(--line);\n  }\n  .wordmark {\n    font-family: \"Dancing Script\", cursive;\n    font-weight: 700;\n    font-size: clamp(2.1rem, 5vw, 2.8rem);\n    color: var(--accent-deep);\n    line-height: 1;\n  }\n  .topbar .eyebrow { margin-bottom: 6px; }\n  .topbar-sub {\n    margin-top: 6px;\n    color: var(--ink-soft);\n    font-size: 0.95rem;\n  }\n\n  .banner {\n    margin: 14px clamp(16px, 4vw, 40px) 0;\n    padding: 10px 16px;\n    border-radius: var(--radius-sm);\n    font-size: 0.88rem;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    background: var(--warn-bg);\n    color: var(--ink);\n    border: 1px solid var(--line);\n  }\n  .banner.error { background: var(--danger-bg); }\n  .banner button.dismiss {\n    margin-left: auto;\n    background: none;\n    border: none;\n    color: inherit;\n    cursor: pointer;\n    font-size: 1rem;\n    opacity: 0.6;\n    padding: 2px 6px;\n  }\n  .banner button.dismiss:hover { opacity: 1; }\n\n  main {\n    padding: 20px clamp(16px, 4vw, 40px) 90px;\n    max-width: 1200px;\n    margin: 0 auto;\n  }\n  .toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    align-items: center;\n    margin-bottom: 16px;\n  }\n  .search-wrap {\n    position: relative;\n    flex: 1 1 220px;\n    min-width: 180px;\n  }\n  .search-wrap input {\n    width: 100%;\n    padding: 10px 14px 10px 36px;\n    border-radius: 999px;\n    border: 1px solid var(--line);\n    background: var(--surface);\n    color: var(--ink);\n    outline: none;\n  }\n  .search-wrap input:focus { border-color: var(--accent); }\n  .search-wrap svg {\n    position: absolute;\n    left: 12px;\n    top: 50%;\n    transform: translateY(-50%);\n    color: var(--ink-soft);\n  }\n  .btn {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 10px 16px;\n    border-radius: 999px;\n    border: 1px solid var(--line);\n    background: var(--surface);\n    color: var(--ink);\n    cursor: pointer;\n    font-size: 0.88rem;\n    font-weight: 500;\n    white-space: nowrap;\n    transition: background 0.15s, border-color 0.15s, transform 0.1s;\n  }\n  .btn:hover { border-color: var(--accent); }\n  .btn:active { transform: scale(0.97); }\n  .btn.primary {\n    background: var(--accent);\n    border-color: var(--accent);\n    color: var(--accent-contrast);\n    font-weight: 600;\n  }\n  .btn.primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }\n  .btn.ghost { background: transparent; }\n  .btn.small { padding: 6px 12px; font-size: 0.8rem; }\n  .btn:disabled { opacity: 0.5; cursor: not-allowed; }\n  .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .chip:focus-visible {\n    outline: 2px solid var(--accent);\n    outline-offset: 2px;\n  }\n  .sync-dot {\n    display: inline-block; width: 8px; height: 8px; border-radius: 50%;\n    background: var(--ink-soft); opacity: 0.5;\n  }\n  .sync-dot.connected { background: #3f9142; opacity: 1; }\n  .sync-dot.error { background: var(--danger); opacity: 1; }\n\n  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }\n  .chip {\n    padding: 7px 14px;\n    border-radius: 999px;\n    border: 1px solid var(--line);\n    background: var(--surface);\n    color: var(--ink-soft);\n    font-size: 0.82rem;\n    font-weight: 500;\n    cursor: pointer;\n  }\n  .chip.active { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }\n\n  .grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));\n    gap: 16px;\n  }\n  .card {\n    background: var(--surface);\n    border: 1px solid var(--line);\n    border-radius: var(--radius-lg);\n    overflow: hidden;\n    display: flex;\n    flex-direction: column;\n    position: relative;\n    box-shadow: 0 2px 10px var(--shadow);\n  }\n  .card-photo {\n    aspect-ratio: 4 / 3;\n    background: var(--surface-2);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    overflow: hidden;\n    position: relative;\n  }\n  .card-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }\n  .card-photo .placeholder { color: var(--ink-soft); font-size: 2rem; }\n  .card-photo-count {\n    position: absolute; bottom: 8px; right: 8px; z-index: 2;\n    background: rgba(32,24,16,0.6); color: #fff; font-size: 0.68rem; font-weight: 600;\n    padding: 3px 8px; border-radius: 999px;\n  }\n  .card-check {\n    position: absolute;\n    top: 10px;\n    left: 10px;\n    width: 26px;\n    height: 26px;\n    border-radius: 8px;\n    border: 2px solid #fff;\n    background: rgba(59,46,34,0.35);\n    display: none;\n    align-items: center;\n    justify-content: center;\n    color: #fff;\n    font-size: 0.9rem;\n    cursor: pointer;\n  }\n  .select-mode .card-check { display: flex; }\n  .card-check.checked { background: var(--accent); border-color: var(--accent); }\n  .card-body {\n    padding: 12px 14px 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    flex: 1;\n  }\n  .card-cat { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-deep); }\n  .card-name { font-size: 1.02rem; font-weight: 600; line-height: 1.25; }\n  .card-price-row { display: flex; align-items: baseline; justify-content: space-between; margin-top: auto; padding-top: 6px; }\n  .card-price { font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent-deep); }\n  .card-stock { font-size: 0.72rem; padding: 3px 9px; border-radius: 999px; font-weight: 600; }\n  .card-stock.ok { color: var(--ink-soft); }\n  .card-stock.low { background: var(--warn-bg); color: var(--warn); }\n  .card-stock.out { background: var(--danger-bg); color: var(--danger); }\n  .card-actions {\n    display: flex;\n    gap: 6px;\n    padding: 0 14px 14px;\n  }\n  .card-actions .btn { flex: 1; justify-content: center; padding: 8px 10px; }\n  .icon-btn {\n    background: none;\n    border: none;\n    cursor: pointer;\n    color: var(--ink-soft);\n    padding: 6px;\n    border-radius: 8px;\n    display: inline-flex;\n  }\n  .icon-btn:hover { color: var(--accent-deep); background: var(--surface-2); }\n\n  .empty-state {\n    text-align: center;\n    padding: 60px 20px;\n    color: var(--ink-soft);\n  }\n  .empty-state .big { font-size: 2.4rem; margin-bottom: 10px; }\n  .empty-state h2 { font-size: 1.2rem; color: var(--ink); margin-bottom: 6px; }\n\n  .selectbar {\n    position: fixed;\n    bottom: 18px;\n    left: 50%;\n    transform: translateX(-50%);\n    background: var(--ink);\n    color: var(--bg);\n    padding: 10px 12px 10px 18px;\n    border-radius: 999px;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    box-shadow: 0 8px 24px var(--shadow);\n    z-index: 40;\n  }\n  .selectbar .btn { border-color: transparent; }\n  .selectbar .btn.primary { background: var(--accent); }\n  .selectbar .btn.ghost { color: var(--bg); }\n\n  .modal-backdrop {\n    position: fixed; inset: 0;\n    background: rgba(32, 24, 16, 0.5);\n    display: flex;\n    align-items: flex-end;\n    justify-content: center;\n    z-index: 50;\n    padding: 0;\n  }\n  @media (min-width: 640px) {\n    .modal-backdrop { align-items: center; padding: 24px; }\n  }\n  .modal {\n    background: var(--surface);\n    width: 100%;\n    max-width: 520px;\n    max-height: 92vh;\n    overflow-y: auto;\n    border-radius: 20px 20px 0 0;\n    padding: 20px clamp(16px, 4vw, 28px) 28px;\n  }\n  @media (min-width: 640px) {\n    .modal { border-radius: var(--radius-lg); }\n  }\n  .modal h2 { font-size: 1.25rem; margin-bottom: 4px; }\n  .modal-sub { color: var(--ink-soft); font-size: 0.85rem; margin-bottom: 16px; }\n  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }\n  .field label { font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); }\n  .field input, .field select, .field textarea {\n    padding: 10px 12px;\n    border-radius: var(--radius-sm);\n    border: 1px solid var(--line);\n    background: var(--bg);\n    color: var(--ink);\n    outline: none;\n  }\n  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }\n  .field textarea { resize: vertical; min-height: 70px; }\n  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }\n  .hint { font-size: 0.76rem; color: var(--ink-soft); }\n  .photo-slots { display: flex; gap: 10px; }\n  .photo-slot {\n    width: 84px; height: 84px; border-radius: var(--radius-md);\n    background: var(--surface-2); overflow: hidden; position: relative;\n    display: flex; align-items: center; justify-content: center;\n    flex-shrink: 0; color: var(--ink-soft); cursor: pointer;\n    border: 1.5px dashed var(--line);\n  }\n  .photo-slot.filled { border-style: solid; }\n  .photo-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }\n  .photo-slot .slot-plus { font-size: 1.5rem; line-height: 1; }\n  .photo-slot .slot-remove {\n    position: absolute; top: 3px; right: 3px; width: 22px; height: 22px;\n    border-radius: 50%; background: rgba(32,24,16,0.55); color: #fff;\n    border: none; display: flex; align-items: center; justify-content: center;\n    font-size: 0.85rem; cursor: pointer; line-height: 1; padding: 0;\n  }\n  .photo-slot .slot-remove:hover { background: rgba(32,24,16,0.8); }\n  .crop-modal .modal { max-width: 420px; }\n  .crop-stage-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }\n  .crop-stage {\n    width: 100%; max-width: 320px; aspect-ratio: 1 / 1;\n    border-radius: var(--radius-md); overflow: hidden; position: relative;\n    background: #000; touch-action: none; cursor: grab;\n  }\n  .crop-stage:active { cursor: grabbing; }\n  .crop-stage img {\n    position: absolute; left: 0; top: 0; max-width: none;\n    user-select: none; -webkit-user-drag: none; pointer-events: none;\n  }\n  .crop-zoom { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 320px; }\n  .crop-zoom input[type=\"range\"] { flex: 1; }\n  .crop-hint { font-size: 0.78rem; color: var(--ink-soft); text-align: center; }\n  .modal-actions { display: flex; gap: 10px; margin-top: 18px; }\n  .modal-actions .btn { flex: 1; justify-content: center; }\n  .modal-close {\n    position: sticky; top: 0; float: right;\n    background: none; border: none; font-size: 1.3rem; color: var(--ink-soft); cursor: pointer;\n  }\n\n  .visually-hidden {\n    position: absolute; width: 1px; height: 1px; overflow: hidden;\n    clip: rect(0 0 0 0); white-space: nowrap;\n  }\n\n  .print-root { display: none; }\n  @media print {\n    /* Always print on a plain white page with dark ink, regardless of\n       whether the screen is currently in dark mode \u2014 printed paper\n       has no \"dark mode\", and printing pale text on a dark fill\n       (inherited from the on-screen theme) would waste ink and be\n       hard to read if the browser's own \"print background colors\"\n       option happens to be on. */\n    html, body { background: #ffffff !important; }\n    body * { visibility: hidden; }\n    .print-root, .print-root * { visibility: visible; }\n    .print-root {\n      display: block;\n      position: absolute; left: 0; top: 0; width: 100%;\n      background: #ffffff;\n    }\n    .print-card {\n      page-break-after: always;\n      padding: 30px;\n      font-family: \"Poppins\", Arial, sans-serif;\n      color: #2c2115;\n      background: #ffffff;\n    }\n    .print-card:last-child { page-break-after: auto; }\n    .print-word { font-family: \"Dancing Script\", cursive; font-size: 2rem; color: #8f7350; margin-bottom: 4px; }\n    .print-photo { width: 100%; max-height: 320px; object-fit: contain; background: #faf5ee; border-radius: 12px; margin: 14px 0; }\n    .print-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }\n    .print-cat { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8f7350; margin-bottom: 10px; }\n    .print-desc { font-size: 0.95rem; line-height: 1.6; margin-bottom: 14px; white-space: pre-wrap; }\n    .print-price { font-size: 1.3rem; font-weight: 700; }\n    .print-list-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 16px; }\n    .print-list-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e6dbca; font-size: 0.95rem; }\n    .print-list-row .n { font-weight: 600; }\n    .print-list-row .c { color: #8a7862; font-size: 0.8rem; }\n    .print-list-row .p { font-weight: 700; font-variant-numeric: tabular-nums; }\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    * { transition: none !important; animation: none !important; }\n  }\n</style>\n</head>\n<body>\n\n<div id=\"banner\" class=\"banner\" hidden></div>\n\n<header class=\"topbar\">\n  <div class=\"eyebrow\">Handmade Artificial Flower Arrangements</div>\n  <div class=\"wordmark\">Made With Love</div>\n  <div class=\"topbar-sub\">Flower catalogue \u2014 prices, costs, and printable descriptions</div>\n</header>\n\n<main>\n  <div class=\"toolbar\">\n    <div class=\"search-wrap\">\n      <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m21 21-4.3-4.3\"/></svg>\n      <input id=\"search-input\" type=\"text\" placeholder=\"Search flowers...\" autocomplete=\"off\" />\n    </div>\n    <button class=\"btn primary\" id=\"add-btn\" type=\"button\">+ Add Flower</button>\n    <button class=\"btn\" id=\"select-toggle-btn\" type=\"button\">Select</button>\n    <button class=\"btn\" id=\"print-all-btn\" type=\"button\">Print Price List</button>\n    <button class=\"btn\" id=\"export-png-btn\" type=\"button\">Export for Website</button>\n    <button class=\"btn\" id=\"export-backup-btn\" type=\"button\" title=\"Share or save a backup of your flowers, to send on or move to another phone, tablet or PC\">Backup</button>\n    <label class=\"btn\" for=\"import-backup-input\" title=\"Load flowers from a backup file made on another device\" style=\"position:relative;\">\n      Restore\n      <input type=\"file\" id=\"import-backup-input\" accept=\"application/json,.json\" style=\"position:absolute;inset:0;width:100%;height:100%;opacity:0;overflow:hidden;cursor:pointer;\" />\n    </label>\n    <button class=\"btn\" id=\"sync-settings-btn\" type=\"button\" title=\"Connect this app so new flowers publish to the website automatically\">\n      <span id=\"sync-status-dot\" class=\"sync-dot\"></span> Website Sync\n    </button>\n  </div>\n\n  <div class=\"chips\" id=\"chips\"></div>\n\n  <div class=\"grid\" id=\"grid\"></div>\n\n  <div class=\"empty-state\" id=\"empty-state\" hidden>\n    <div class=\"big\">\ud83c\udf38</div>\n    <h2>No flowers yet</h2>\n    <p>Tap \"+ Add Flower\" to add the first one, with a photo, price, and description.</p>\n  </div>\n</main>\n\n<div class=\"selectbar\" id=\"selectbar\" hidden>\n  <span id=\"select-count\">0 selected</span>\n  <button class=\"btn primary small\" id=\"print-selected-btn\" type=\"button\">Print Selected</button>\n  <button class=\"btn ghost small\" id=\"select-cancel-btn\" type=\"button\">Cancel</button>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-backdrop\" hidden>\n  <div class=\"modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"modal-title\">\n    <button class=\"modal-close\" id=\"modal-close-btn\" type=\"button\" aria-label=\"Close\">&times;</button>\n    <h2 id=\"modal-title\">Add Flower</h2>\n    <div class=\"modal-sub\">Fields marked * are required.</div>\n    <form id=\"item-form\">\n      <div class=\"field\">\n        <label>Photos (up to 3)</label>\n        <div class=\"photo-slots\" id=\"photo-slots\">\n          <div class=\"photo-slot\" data-slot=\"0\"><span class=\"slot-plus\">+</span></div>\n          <div class=\"photo-slot\" data-slot=\"1\"><span class=\"slot-plus\">+</span></div>\n          <div class=\"photo-slot\" data-slot=\"2\"><span class=\"slot-plus\">+</span></div>\n        </div>\n        <input type=\"file\" id=\"photo-file-input\" accept=\"image/*\" style=\"display:none;\" />\n        <div class=\"hint\">Tap a square to add a photo. Drag and zoom to choose exactly what shows before it's saved \u2014 the first photo is used as the main one.</div>\n      </div>\n      <div class=\"field\">\n        <label for=\"name-input\">Name *</label>\n        <input id=\"name-input\" type=\"text\" required maxlength=\"80\" placeholder=\"e.g. Classic rose hat box\" />\n      </div>\n      <div class=\"field-row\">\n        <div class=\"field\">\n          <label for=\"category-input\">Category</label>\n          <select id=\"category-input\"></select>\n        </div>\n        <div class=\"field\">\n          <label for=\"stock-input\">Stock on hand</label>\n          <input id=\"stock-input\" type=\"number\" min=\"0\" step=\"1\" placeholder=\"0\" />\n        </div>\n      </div>\n      <div class=\"field-row\">\n        <div class=\"field\">\n          <label for=\"price-input\">Sell price (\u00a3) *</label>\n          <input id=\"price-input\" type=\"number\" min=\"0\" step=\"0.01\" required placeholder=\"0.00\" />\n        </div>\n        <div class=\"field\">\n          <label for=\"cost-input\">Cost (\u00a3)</label>\n          <input id=\"cost-input\" type=\"number\" min=\"0\" step=\"0.01\" placeholder=\"0.00\" />\n        </div>\n      </div>\n      <div class=\"field\">\n        <label for=\"supplier-input\">Supplier / where sourced</label>\n        <input id=\"supplier-input\" type=\"text\" maxlength=\"120\" placeholder=\"e.g. local wholesaler\" />\n      </div>\n      <div class=\"field\">\n        <label for=\"desc-input\">Sell description</label>\n        <textarea id=\"desc-input\" maxlength=\"600\" placeholder=\"What a customer sees \u2014 used on the printed description too.\"></textarea>\n      </div>\n      <div class=\"hint\">Cost and supplier are kept private \u2014 they never appear on a print-out.</div>\n      <div class=\"modal-actions\">\n        <button type=\"button\" class=\"btn ghost\" id=\"delete-item-btn\" hidden>Delete</button>\n        <button type=\"submit\" class=\"btn primary\" id=\"save-item-btn\">Save Flower</button>\n      </div>\n    </form>\n  </div>\n</div>\n\n<div class=\"modal-backdrop crop-modal\" id=\"crop-modal-backdrop\" hidden>\n  <div class=\"modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"crop-modal-title\">\n    <button class=\"modal-close\" id=\"crop-close-btn\" type=\"button\" aria-label=\"Cancel\">&times;</button>\n    <h2 id=\"crop-modal-title\">Adjust photo</h2>\n    <div class=\"modal-sub\">Drag to move, use the slider to zoom \u2014 this is exactly what will be saved.</div>\n    <div class=\"crop-stage-wrap\">\n      <div class=\"crop-stage\" id=\"crop-stage\"><img id=\"crop-img\" src=\"\" alt=\"\" draggable=\"false\" /></div>\n      <div class=\"crop-zoom\">\n        <span aria-hidden=\"true\">&#128269;</span>\n        <input type=\"range\" id=\"crop-zoom-input\" min=\"1\" max=\"3\" step=\"0.01\" value=\"1\" />\n      </div>\n      <div class=\"crop-hint\">This is how it'll look on the price list.</div>\n    </div>\n    <div class=\"modal-actions\">\n      <button type=\"button\" class=\"btn ghost\" id=\"crop-cancel-btn\">Cancel</button>\n      <button type=\"button\" class=\"btn primary\" id=\"crop-use-btn\">Use this photo</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"modal-backdrop\" id=\"sync-modal-backdrop\" hidden>\n  <div class=\"modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"sync-modal-title\">\n    <button class=\"modal-close\" id=\"sync-close-btn\" type=\"button\" aria-label=\"Close\">&times;</button>\n    <h2 id=\"sync-modal-title\">Website Sync</h2>\n    <div class=\"modal-sub\" id=\"sync-modal-status\">Not connected \u2014 flowers only save on this device until this is set up.</div>\n    <div class=\"field\">\n      <label for=\"gh-token-input\">Website access key</label>\n      <input id=\"gh-token-input\" type=\"password\" autocomplete=\"off\" placeholder=\"Paste the key Darren gave you\" />\n      <div class=\"hint\">Saved only on this phone \u2014 never sent anywhere except directly to the website whenever you add, edit or delete a flower.</div>\n    </div>\n    <div class=\"modal-actions\">\n      <button type=\"button\" class=\"btn ghost\" id=\"sync-disconnect-btn\">Disconnect</button>\n      <button type=\"button\" class=\"btn primary\" id=\"sync-save-btn\">Save</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"print-root\" id=\"print-root\"></div>\n\n<script id=\"catalogue-data\" type=\"application/json\">";
+const HEAD_HTML = "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\" />\n<title>MWL Florals Catalogue</title>\n\n<!-- App icon, for browser tabs and for \"Add to Home Screen\" / \"Install\"\n     on phone, tablet and PC. Without these, the OS falls back to a\n     generic globe/blank icon when the page is saved - see manifest.json\n     for the full icon set. All paths are relative to this file, so the\n     \"icons\" folder must sit alongside index.html on GitHub Pages. -->\n<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"icons/icon-32.png\">\n<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"icons/icon-16.png\">\n<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"icons/icon-180.png\">\n<link rel=\"manifest\" href=\"manifest.json\">\n<meta name=\"theme-color\" content=\"#8f7350\">\n<meta name=\"apple-mobile-web-app-title\" content=\"MWL Florals\">\n<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap\" rel=\"stylesheet\">\n<style>\n  :root {\n    --bg: #faf5ee;\n    --surface: #ffffff;\n    --surface-2: #f3e9dc;\n    --ink: #3b2e22;\n    --ink-soft: #8a7862;\n    --accent: #8f7350;\n    --accent-deep: #6b5539;\n    --accent-contrast: #ffffff;\n    --line: #e6dbca;\n    --warn: #a97417;\n    --warn-bg: #f6e6c8;\n    --danger: #ad4a37;\n    --danger-bg: #f5ddd5;\n    --shadow: rgba(59, 46, 34, 0.10);\n    --radius-lg: 18px;\n    --radius-md: 12px;\n    --radius-sm: 8px;\n  }\n  @media (prefers-color-scheme: dark) {\n    :root:not([data-theme=\"light\"]) {\n      --bg: #201810;\n      --surface: #2a2016;\n      --surface-2: #372a1c;\n      --ink: #f2e7d8;\n      --ink-soft: #c2ac8e;\n      --accent: #cd9f6d;\n      --accent-deep: #e2b989;\n      --accent-contrast: #241a10;\n      --line: #493a28;\n      --warn: #e0ac4f;\n      --warn-bg: #3c2f18;\n      --danger: #e08d76;\n      --danger-bg: #402620;\n      --shadow: rgba(0, 0, 0, 0.4);\n    }\n  }\n  :root[data-theme=\"dark\"] {\n    --bg: #201810;\n    --surface: #2a2016;\n    --surface-2: #372a1c;\n    --ink: #f2e7d8;\n    --ink-soft: #c2ac8e;\n    --accent: #cd9f6d;\n    --accent-deep: #e2b989;\n    --accent-contrast: #241a10;\n    --line: #493a28;\n    --warn: #e0ac4f;\n    --warn-bg: #3c2f18;\n    --danger: #e08d76;\n    --danger-bg: #402620;\n    --shadow: rgba(0, 0, 0, 0.4);\n  }\n\n  * { box-sizing: border-box; }\n  /* The `hidden` attribute's default `display:none` only wins a\n     specificity tie by cascade order \u2014 several components below\n     also set their own unconditional `display: flex`, which is an\n     equal-specificity rule that loads later and would otherwise win,\n     leaving a \"hidden\" banner/modal/select-bar actually showing.\n     Force it explicit instead of relying on cascade order. */\n  [hidden] { display: none !important; }\n  html, body { margin: 0; padding: 0; }\n  body {\n    background: var(--bg);\n    color: var(--ink);\n    font-family: \"Poppins\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif;\n    -webkit-font-smoothing: antialiased;\n    min-height: 100vh;\n  }\n  h1, h2, h3 { text-wrap: balance; margin: 0; }\n  p { margin: 0; }\n  button {\n    font-family: inherit;\n    -webkit-user-select: none;\n    user-select: none;\n    -webkit-touch-callout: none;\n    touch-action: manipulation;\n  }\n  input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }\n  ::selection { background: var(--accent); color: var(--accent-contrast); }\n\n  .eyebrow {\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: var(--ink-soft);\n  }\n\n  .topbar {\n    padding: 22px clamp(16px, 4vw, 40px) 18px;\n    background: linear-gradient(180deg, var(--surface-2), var(--bg));\n    border-bottom: 1px solid var(--line);\n  }\n  .wordmark {\n    font-family: \"Dancing Script\", cursive;\n    font-weight: 700;\n    font-size: clamp(2.1rem, 5vw, 2.8rem);\n    color: var(--accent-deep);\n    line-height: 1;\n  }\n  .topbar .eyebrow { margin-bottom: 6px; }\n  .topbar-sub {\n    margin-top: 6px;\n    color: var(--ink-soft);\n    font-size: 0.95rem;\n  }\n\n  .banner {\n    margin: 14px clamp(16px, 4vw, 40px) 0;\n    padding: 10px 16px;\n    border-radius: var(--radius-sm);\n    font-size: 0.88rem;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    background: var(--warn-bg);\n    color: var(--ink);\n    border: 1px solid var(--line);\n  }\n  .banner.error { background: var(--danger-bg); }\n  .banner button.dismiss {\n    margin-left: auto;\n    background: none;\n    border: none;\n    color: inherit;\n    cursor: pointer;\n    font-size: 1rem;\n    opacity: 0.6;\n    padding: 2px 6px;\n  }\n  .banner button.dismiss:hover { opacity: 1; }\n\n  main {\n    padding: 20px clamp(16px, 4vw, 40px) 90px;\n    max-width: 1200px;\n    margin: 0 auto;\n  }\n  .toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    align-items: center;\n    margin-bottom: 16px;\n  }\n  .search-wrap {\n    position: relative;\n    flex: 1 1 220px;\n    min-width: 180px;\n  }\n  .search-wrap input {\n    width: 100%;\n    padding: 10px 14px 10px 36px;\n    border-radius: 999px;\n    border: 1px solid var(--line);\n    background: var(--surface);\n    color: var(--ink);\n    outline: none;\n  }\n  .search-wrap input:focus { border-color: var(--accent); }\n  .search-wrap svg {\n    position: absolute;\n    left: 12px;\n    top: 50%;\n    transform: translateY(-50%);\n    color: var(--ink-soft);\n  }\n  .btn {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 10px 16px;\n    border-radius: 999px;\n    border: 1px solid var(--line);\n    background: var(--surface);\n    color: var(--ink);\n    cursor: pointer;\n    font-size: 0.88rem;\n    font-weight: 500;\n    white-space: nowrap;\n    transition: background 0.15s, border-color 0.15s, transform 0.1s;\n  }\n  .btn:hover { border-color: var(--accent); }\n  .btn:active { transform: scale(0.97); }\n  .btn.primary {\n    background: var(--accent);\n    border-color: var(--accent);\n    color: var(--accent-contrast);\n    font-weight: 600;\n  }\n  .btn.primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }\n  .btn.ghost { background: transparent; }\n  .btn.small { padding: 6px 12px; font-size: 0.8rem; }\n  .btn:disabled { opacity: 0.5; cursor: not-allowed; }\n  .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .chip:focus-visible {\n    outline: 2px solid var(--accent);\n    outline-offset: 2px;\n  }\n  .sync-dot {\n    display: inline-block; width: 8px; height: 8px; border-radius: 50%;\n    background: var(--ink-soft); opacity: 0.5;\n  }\n  .sync-dot.connected { background: #3f9142; opacity: 1; }\n  .sync-dot.error { background: var(--danger); opacity: 1; }\n\n  .view-tabs { display: flex; gap: 8px; margin-bottom: 14px; }\n  .view-tab {\n    padding: 9px 18px;\n    border-radius: 999px;\n    border: 1px solid var(--line);\n    background: var(--surface);\n    color: var(--ink-soft);\n    font-weight: 600;\n    font-size: 0.9rem;\n    cursor: pointer;\n  }\n  .view-tab.active { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }\n\n  .card-meta { font-size: 0.72rem; color: var(--ink-soft); }\n  .card-snippet {\n    font-size: 0.82rem;\n    color: var(--ink-soft);\n    line-height: 1.4;\n    display: -webkit-box;\n    -webkit-line-clamp: 3;\n    -webkit-box-orient: vertical;\n    overflow: hidden;\n  }\n\n  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }\n  .chip {\n    padding: 7px 14px;\n    border-radius: 999px;\n    border: 1px solid var(--line);\n    background: var(--surface);\n    color: var(--ink-soft);\n    font-size: 0.82rem;\n    font-weight: 500;\n    cursor: pointer;\n  }\n  .chip.active { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }\n\n  .grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));\n    gap: 16px;\n  }\n  .card {\n    background: var(--surface);\n    border: 1px solid var(--line);\n    border-radius: var(--radius-lg);\n    overflow: hidden;\n    display: flex;\n    flex-direction: column;\n    position: relative;\n    box-shadow: 0 2px 10px var(--shadow);\n  }\n  .card-photo {\n    aspect-ratio: 4 / 3;\n    background: var(--surface-2);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    overflow: hidden;\n    position: relative;\n  }\n  .card-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }\n  .card-photo .placeholder { color: var(--ink-soft); font-size: 2rem; }\n  .card-photo-count {\n    position: absolute; bottom: 8px; right: 8px; z-index: 2;\n    background: rgba(32,24,16,0.6); color: #fff; font-size: 0.68rem; font-weight: 600;\n    padding: 3px 8px; border-radius: 999px;\n  }\n  .card-check {\n    position: absolute;\n    top: 10px;\n    left: 10px;\n    width: 26px;\n    height: 26px;\n    border-radius: 8px;\n    border: 2px solid #fff;\n    background: rgba(59,46,34,0.35);\n    display: none;\n    align-items: center;\n    justify-content: center;\n    color: #fff;\n    font-size: 0.9rem;\n    cursor: pointer;\n  }\n  .select-mode .card-check { display: flex; }\n  .card-check.checked { background: var(--accent); border-color: var(--accent); }\n  .card-body {\n    padding: 12px 14px 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    flex: 1;\n  }\n  .card-cat { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-deep); }\n  .card-name { font-size: 1.02rem; font-weight: 600; line-height: 1.25; }\n  .card-price-row { display: flex; align-items: baseline; justify-content: space-between; margin-top: auto; padding-top: 6px; }\n  .card-price { font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent-deep); }\n  .card-stock { font-size: 0.72rem; padding: 3px 9px; border-radius: 999px; font-weight: 600; }\n  .card-stock.ok { color: var(--ink-soft); }\n  .card-stock.low { background: var(--warn-bg); color: var(--warn); }\n  .card-stock.out { background: var(--danger-bg); color: var(--danger); }\n  .card-actions {\n    display: flex;\n    gap: 6px;\n    padding: 0 14px 14px;\n  }\n  .card-actions .btn { flex: 1; justify-content: center; padding: 8px 10px; }\n  .icon-btn {\n    background: none;\n    border: none;\n    cursor: pointer;\n    color: var(--ink-soft);\n    padding: 6px;\n    border-radius: 8px;\n    display: inline-flex;\n  }\n  .icon-btn:hover { color: var(--accent-deep); background: var(--surface-2); }\n\n  .empty-state {\n    text-align: center;\n    padding: 60px 20px;\n    color: var(--ink-soft);\n  }\n  .empty-state .big { font-size: 2.4rem; margin-bottom: 10px; }\n  .empty-state h2 { font-size: 1.2rem; color: var(--ink); margin-bottom: 6px; }\n\n  .selectbar {\n    position: fixed;\n    bottom: 18px;\n    left: 50%;\n    transform: translateX(-50%);\n    background: var(--ink);\n    color: var(--bg);\n    padding: 10px 12px 10px 18px;\n    border-radius: 999px;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    box-shadow: 0 8px 24px var(--shadow);\n    z-index: 40;\n  }\n  .selectbar .btn { border-color: transparent; }\n  .selectbar .btn.primary { background: var(--accent); }\n  .selectbar .btn.ghost { color: var(--bg); }\n\n  .modal-backdrop {\n    position: fixed; inset: 0;\n    background: rgba(32, 24, 16, 0.5);\n    display: flex;\n    align-items: flex-end;\n    justify-content: center;\n    z-index: 50;\n    padding: 0;\n  }\n  @media (min-width: 640px) {\n    .modal-backdrop { align-items: center; padding: 24px; }\n  }\n  .modal {\n    background: var(--surface);\n    width: 100%;\n    max-width: 520px;\n    max-height: 92vh;\n    overflow-y: auto;\n    border-radius: 20px 20px 0 0;\n    padding: 20px clamp(16px, 4vw, 28px) 28px;\n  }\n  @media (min-width: 640px) {\n    .modal { border-radius: var(--radius-lg); }\n  }\n  .modal h2 { font-size: 1.25rem; margin-bottom: 4px; }\n  .modal-sub { color: var(--ink-soft); font-size: 0.85rem; margin-bottom: 16px; }\n  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }\n  .field label { font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); }\n  .field input, .field select, .field textarea {\n    padding: 10px 12px;\n    border-radius: var(--radius-sm);\n    border: 1px solid var(--line);\n    background: var(--bg);\n    color: var(--ink);\n    outline: none;\n  }\n  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }\n  .field textarea { resize: vertical; min-height: 70px; }\n  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }\n  .hint { font-size: 0.76rem; color: var(--ink-soft); }\n  .photo-slots { display: flex; gap: 10px; }\n  .photo-slot {\n    width: 84px; height: 84px; border-radius: var(--radius-md);\n    background: var(--surface-2); overflow: hidden; position: relative;\n    display: flex; align-items: center; justify-content: center;\n    flex-shrink: 0; color: var(--ink-soft); cursor: pointer;\n    border: 1.5px dashed var(--line);\n  }\n  .photo-slot.filled { border-style: solid; }\n  .photo-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }\n  .photo-slot .slot-plus { font-size: 1.5rem; line-height: 1; }\n  .photo-slot .slot-remove {\n    position: absolute; top: 3px; right: 3px; width: 22px; height: 22px;\n    border-radius: 50%; background: rgba(32,24,16,0.55); color: #fff;\n    border: none; display: flex; align-items: center; justify-content: center;\n    font-size: 0.85rem; cursor: pointer; line-height: 1; padding: 0;\n  }\n  .photo-slot .slot-remove:hover { background: rgba(32,24,16,0.8); }\n  .crop-modal .modal { max-width: 420px; }\n  .crop-stage-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }\n  .crop-stage {\n    width: 100%; max-width: 320px; aspect-ratio: 1 / 1;\n    border-radius: var(--radius-md); overflow: hidden; position: relative;\n    background: #000; touch-action: none; cursor: grab;\n  }\n  .crop-stage:active { cursor: grabbing; }\n  .crop-stage img {\n    position: absolute; left: 0; top: 0; max-width: none;\n    user-select: none; -webkit-user-drag: none; pointer-events: none;\n  }\n  .crop-zoom { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 320px; }\n  .crop-zoom input[type=\"range\"] { flex: 1; }\n  .crop-hint { font-size: 0.78rem; color: var(--ink-soft); text-align: center; }\n  .modal-actions { display: flex; gap: 10px; margin-top: 18px; }\n  .modal-actions .btn { flex: 1; justify-content: center; }\n  .modal-close {\n    position: sticky; top: 0; float: right;\n    background: none; border: none; font-size: 1.3rem; color: var(--ink-soft); cursor: pointer;\n  }\n\n  .visually-hidden {\n    position: absolute; width: 1px; height: 1px; overflow: hidden;\n    clip: rect(0 0 0 0); white-space: nowrap;\n  }\n\n  .print-root { display: none; }\n  @media print {\n    /* Always print on a plain white page with dark ink, regardless of\n       whether the screen is currently in dark mode \u2014 printed paper\n       has no \"dark mode\", and printing pale text on a dark fill\n       (inherited from the on-screen theme) would waste ink and be\n       hard to read if the browser's own \"print background colors\"\n       option happens to be on. */\n    html, body { background: #ffffff !important; }\n    body * { visibility: hidden; }\n    .print-root, .print-root * { visibility: visible; }\n    .print-root {\n      display: block;\n      position: absolute; left: 0; top: 0; width: 100%;\n      background: #ffffff;\n    }\n    .print-card {\n      page-break-after: always;\n      padding: 30px;\n      font-family: \"Poppins\", Arial, sans-serif;\n      color: #2c2115;\n      background: #ffffff;\n    }\n    .print-card:last-child { page-break-after: auto; }\n    .print-word { font-family: \"Dancing Script\", cursive; font-size: 2rem; color: #8f7350; margin-bottom: 4px; }\n    .print-photo { width: 100%; max-height: 320px; object-fit: contain; background: #faf5ee; border-radius: 12px; margin: 14px 0; }\n    .print-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }\n    .print-cat { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8f7350; margin-bottom: 10px; }\n    .print-desc { font-size: 0.95rem; line-height: 1.6; margin-bottom: 14px; white-space: pre-wrap; }\n    .print-price { font-size: 1.3rem; font-weight: 700; }\n    .print-list-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 16px; }\n    .print-list-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e6dbca; font-size: 0.95rem; }\n    .print-list-row .n { font-weight: 600; }\n    .print-list-row .c { color: #8a7862; font-size: 0.8rem; }\n    .print-list-row .p { font-weight: 700; font-variant-numeric: tabular-nums; }\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    * { transition: none !important; animation: none !important; }\n  }\n</style>\n</head>\n<body>\n\n<div id=\"banner\" class=\"banner\" hidden></div>\n\n<header class=\"topbar\">\n  <div class=\"eyebrow\">Handmade Artificial Flower Arrangements</div>\n  <div class=\"wordmark\">Made With Love</div>\n  <div class=\"topbar-sub\">Flower catalogue \u2014 prices, costs, and printable descriptions</div>\n</header>\n\n<main>\n  <div class=\"view-tabs\" id=\"view-tabs\">\n    <button type=\"button\" class=\"view-tab active\" id=\"view-tab-flowers\" data-view=\"flowers\">\ud83c\udf38 Flowers</button>\n    <button type=\"button\" class=\"view-tab\" id=\"view-tab-posts\" data-view=\"posts\">\ud83d\udcf0 Blog Posts</button>\n  </div>\n\n  <div class=\"toolbar\" id=\"flowers-toolbar\">\n    <div class=\"search-wrap\">\n      <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m21 21-4.3-4.3\"/></svg>\n      <input id=\"search-input\" type=\"text\" placeholder=\"Search flowers...\" autocomplete=\"off\" />\n    </div>\n    <button class=\"btn primary\" id=\"add-btn\" type=\"button\">+ Add Flower</button>\n    <button class=\"btn\" id=\"select-toggle-btn\" type=\"button\">Select</button>\n    <button class=\"btn\" id=\"print-all-btn\" type=\"button\">Print Price List</button>\n    <button class=\"btn\" id=\"export-png-btn\" type=\"button\">Export for Website</button>\n    <button class=\"btn\" id=\"export-backup-btn\" type=\"button\" title=\"Share or save a backup of your flowers, to send on or move to another phone, tablet or PC\">Backup</button>\n    <label class=\"btn\" for=\"import-backup-input\" title=\"Load flowers from a backup file made on another device\" style=\"position:relative;\">\n      Restore\n      <input type=\"file\" id=\"import-backup-input\" accept=\"application/json,.json\" style=\"position:absolute;inset:0;width:100%;height:100%;opacity:0;overflow:hidden;cursor:pointer;\" />\n    </label>\n    <button class=\"btn\" id=\"sync-settings-btn\" type=\"button\" title=\"Connect this app so new flowers and posts publish to the website automatically\">\n      <span id=\"sync-status-dot\" class=\"sync-dot\"></span> Website Sync\n    </button>\n  </div>\n\n  <div class=\"toolbar\" id=\"posts-toolbar\" hidden>\n    <div class=\"search-wrap\">\n      <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m21 21-4.3-4.3\"/></svg>\n      <input id=\"post-search-input\" type=\"text\" placeholder=\"Search posts...\" autocomplete=\"off\" />\n    </div>\n    <button class=\"btn primary\" id=\"add-post-btn\" type=\"button\">+ Add Post</button>\n    <button class=\"btn\" id=\"sync-settings-btn-posts\" type=\"button\" title=\"Connect this app so new flowers and posts publish to the website automatically\">\n      <span id=\"sync-status-dot-posts\" class=\"sync-dot\"></span> Website Sync\n    </button>\n  </div>\n\n  <div class=\"chips\" id=\"chips\"></div>\n\n  <div class=\"grid\" id=\"grid\"></div>\n\n  <div class=\"empty-state\" id=\"empty-state\" hidden>\n    <div class=\"big\">\ud83c\udf38</div>\n    <h2>No flowers yet</h2>\n    <p>Tap \"+ Add Flower\" to add the first one, with a photo, price, and description.</p>\n  </div>\n\n  <div class=\"grid\" id=\"posts-grid\" hidden></div>\n\n  <div class=\"empty-state\" id=\"posts-empty-state\" hidden>\n    <div class=\"big\">\ud83d\udcf0</div>\n    <h2>No posts yet</h2>\n    <p>Tap \"+ Add Post\" to share your first update \u2014 it'll appear on the News page.</p>\n  </div>\n</main>\n\n<div class=\"selectbar\" id=\"selectbar\" hidden>\n  <span id=\"select-count\">0 selected</span>\n  <button class=\"btn primary small\" id=\"print-selected-btn\" type=\"button\">Print Selected</button>\n  <button class=\"btn ghost small\" id=\"select-cancel-btn\" type=\"button\">Cancel</button>\n</div>\n\n<div class=\"modal-backdrop\" id=\"modal-backdrop\" hidden>\n  <div class=\"modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"modal-title\">\n    <button class=\"modal-close\" id=\"modal-close-btn\" type=\"button\" aria-label=\"Close\">&times;</button>\n    <h2 id=\"modal-title\">Add Flower</h2>\n    <div class=\"modal-sub\">Fields marked * are required.</div>\n    <form id=\"item-form\">\n      <div class=\"field\">\n        <label>Photos (up to 3)</label>\n        <div class=\"photo-slots\" id=\"photo-slots\">\n          <div class=\"photo-slot\" data-slot=\"0\"><span class=\"slot-plus\">+</span></div>\n          <div class=\"photo-slot\" data-slot=\"1\"><span class=\"slot-plus\">+</span></div>\n          <div class=\"photo-slot\" data-slot=\"2\"><span class=\"slot-plus\">+</span></div>\n        </div>\n        <input type=\"file\" id=\"photo-file-input\" accept=\"image/*\" style=\"display:none;\" />\n        <div class=\"hint\">Tap a square to add a photo. Drag and zoom to choose exactly what shows before it's saved \u2014 the first photo is used as the main one.</div>\n      </div>\n      <div class=\"field\">\n        <label for=\"name-input\">Name *</label>\n        <input id=\"name-input\" type=\"text\" required maxlength=\"80\" placeholder=\"e.g. Classic rose hat box\" />\n      </div>\n      <div class=\"field-row\">\n        <div class=\"field\">\n          <label for=\"category-input\">Category</label>\n          <select id=\"category-input\"></select>\n        </div>\n        <div class=\"field\">\n          <label for=\"stock-input\">Stock on hand</label>\n          <input id=\"stock-input\" type=\"number\" min=\"0\" step=\"1\" placeholder=\"0\" />\n        </div>\n      </div>\n      <div class=\"field-row\">\n        <div class=\"field\">\n          <label for=\"price-input\">Sell price (\u00a3) *</label>\n          <input id=\"price-input\" type=\"number\" min=\"0\" step=\"0.01\" required placeholder=\"0.00\" />\n        </div>\n        <div class=\"field\">\n          <label for=\"cost-input\">Cost (\u00a3)</label>\n          <input id=\"cost-input\" type=\"number\" min=\"0\" step=\"0.01\" placeholder=\"0.00\" />\n        </div>\n      </div>\n      <div class=\"field\">\n        <label for=\"supplier-input\">Supplier / where sourced</label>\n        <input id=\"supplier-input\" type=\"text\" maxlength=\"120\" placeholder=\"e.g. local wholesaler\" />\n      </div>\n      <div class=\"field\">\n        <label for=\"desc-input\">Sell description</label>\n        <textarea id=\"desc-input\" maxlength=\"600\" placeholder=\"What a customer sees \u2014 used on the printed description too.\"></textarea>\n      </div>\n      <div class=\"hint\">Cost and supplier are kept private \u2014 they never appear on a print-out.</div>\n      <div class=\"modal-actions\">\n        <button type=\"button\" class=\"btn ghost\" id=\"delete-item-btn\" hidden>Delete</button>\n        <button type=\"submit\" class=\"btn primary\" id=\"save-item-btn\">Save Flower</button>\n      </div>\n    </form>\n  </div>\n</div>\n\n<div class=\"modal-backdrop\" id=\"post-modal-backdrop\" hidden>\n  <div class=\"modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"post-modal-title\">\n    <button class=\"modal-close\" id=\"post-modal-close-btn\" type=\"button\" aria-label=\"Close\">&times;</button>\n    <h2 id=\"post-modal-title\">Add Post</h2>\n    <div class=\"modal-sub\">Fields marked * are required.</div>\n    <form id=\"post-form\">\n      <div class=\"field\">\n        <label>Photo (optional)</label>\n        <div class=\"photo-slots\">\n          <div class=\"photo-slot\" id=\"post-photo-slot\"><span class=\"slot-plus\">+</span></div>\n        </div>\n        <div class=\"hint\">Tap the square to add a photo \u2014 drag and zoom to choose what shows, same as a flower photo.</div>\n      </div>\n      <div class=\"field\">\n        <label for=\"post-title-input\">Title *</label>\n        <input id=\"post-title-input\" type=\"text\" required maxlength=\"100\" placeholder=\"e.g. New envelope florals now in stock!\" />\n      </div>\n      <div class=\"field\">\n        <label for=\"post-body-input\">Write-up *</label>\n        <textarea id=\"post-body-input\" required maxlength=\"2000\" placeholder=\"What's new \u2014 leave a blank line between paragraphs.\"></textarea>\n      </div>\n      <div class=\"field-row\">\n        <div class=\"field\">\n          <label for=\"post-date-input\">Date</label>\n          <input id=\"post-date-input\" type=\"date\" />\n        </div>\n        <div class=\"field\">\n          <label for=\"post-author-input\">Posted by</label>\n          <select id=\"post-author-input\">\n            <option value=\"Marie\">Marie</option>\n            <option value=\"Darren\">Darren</option>\n          </select>\n        </div>\n      </div>\n      <div class=\"modal-actions\">\n        <button type=\"button\" class=\"btn ghost\" id=\"delete-post-btn\" hidden>Delete</button>\n        <button type=\"submit\" class=\"btn primary\" id=\"save-post-btn\">Save Post</button>\n      </div>\n    </form>\n  </div>\n</div>\n\n<div class=\"modal-backdrop crop-modal\" id=\"crop-modal-backdrop\" hidden>\n  <div class=\"modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"crop-modal-title\">\n    <button class=\"modal-close\" id=\"crop-close-btn\" type=\"button\" aria-label=\"Cancel\">&times;</button>\n    <h2 id=\"crop-modal-title\">Adjust photo</h2>\n    <div class=\"modal-sub\">Drag to move, use the slider to zoom \u2014 this is exactly what will be saved.</div>\n    <div class=\"crop-stage-wrap\">\n      <div class=\"crop-stage\" id=\"crop-stage\"><img id=\"crop-img\" src=\"\" alt=\"\" draggable=\"false\" /></div>\n      <div class=\"crop-zoom\">\n        <span aria-hidden=\"true\">&#128269;</span>\n        <input type=\"range\" id=\"crop-zoom-input\" min=\"1\" max=\"3\" step=\"0.01\" value=\"1\" />\n      </div>\n      <div class=\"crop-hint\">This is how it'll look on the price list.</div>\n    </div>\n    <div class=\"modal-actions\">\n      <button type=\"button\" class=\"btn ghost\" id=\"crop-cancel-btn\">Cancel</button>\n      <button type=\"button\" class=\"btn primary\" id=\"crop-use-btn\">Use this photo</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"modal-backdrop\" id=\"sync-modal-backdrop\" hidden>\n  <div class=\"modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"sync-modal-title\">\n    <button class=\"modal-close\" id=\"sync-close-btn\" type=\"button\" aria-label=\"Close\">&times;</button>\n    <h2 id=\"sync-modal-title\">Website Sync</h2>\n    <div class=\"modal-sub\" id=\"sync-modal-status\">Not connected \u2014 flowers and posts only save on this device until this is set up.</div>\n    <div class=\"field\">\n      <label for=\"gh-token-input\">Website access key</label>\n      <input id=\"gh-token-input\" type=\"password\" autocomplete=\"off\" placeholder=\"Paste the key Darren gave you\" />\n      <div class=\"hint\">Saved only on this phone \u2014 never sent anywhere except directly to the website whenever you add, edit or delete a flower or post.</div>\n    </div>\n    <div class=\"modal-actions\">\n      <button type=\"button\" class=\"btn ghost\" id=\"sync-disconnect-btn\">Disconnect</button>\n      <button type=\"button\" class=\"btn primary\" id=\"sync-save-btn\">Save</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"print-root\" id=\"print-root\"></div>\n\n<script id=\"catalogue-data\" type=\"application/json\">";
 
 // These two are written as split string concatenations, not a single
 // literal, so the raw text of THIS script never contains the
@@ -636,15 +727,18 @@ const HEAD_HTML = "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"
 // would treat it as this script tag's own closing tag the next time
 // this text is re-embedded inside a fresh <script> element, cutting
 // the page in half.
+const BLOG_SEP = "<" + "/script>\n<script id=\"blog-data\" type=\"application/json\">";
 const MID_HTML = "<" + "/script>\n<script>";
 const TAIL_HTML = "<" + "/script>\n</body>\n</html>";
 
-function buildFullHtml(items) {
+function buildFullHtml(items, posts) {
   // Same reasoning as above, applied to user-typed content: a flower
-  // description that happened to contain the text "<" + "/script>" would
-  // otherwise terminate the data tag early and corrupt the page.
-  const dataJson = JSON.stringify(items).replace(/<\//g, "<\\/");
-  return HEAD_HTML + dataJson + MID_HTML + OWN_SCRIPT_SOURCE + TAIL_HTML;
+  // description or blog post that happened to contain the text
+  // "<" + "/script>" would otherwise terminate its data tag early and
+  // corrupt the page.
+  const itemsJson = JSON.stringify(items).replace(/<\//g, "<\\/");
+  const postsJson = JSON.stringify(posts).replace(/<\//g, "<\\/");
+  return HEAD_HTML + itemsJson + BLOG_SEP + postsJson + MID_HTML + OWN_SCRIPT_SOURCE + TAIL_HTML;
 }
 
 const CATEGORIES = ["Wreaths", "Hat Boxes", "Grave Pots", "Bobo Balloons", "Rose Bears", "Envelopes", "Halloween", "Christmas", "Other"];
@@ -655,6 +749,7 @@ const CATEGORIES = ["Wreaths", "Hat Boxes", "Grave Pots", "Bobo Balloons", "Rose
 // device opens it), never something that should silently roll back
 // real edits already made here.
 const STORAGE_KEY = "mwl-catalogue-items-v1";
+const POSTS_STORAGE_KEY = "mwl-blog-posts-v1";
 
 let ITEMS = JSON.parse(document.getElementById("catalogue-data").textContent);
 try {
@@ -662,12 +757,22 @@ try {
   if (savedLocally) ITEMS = JSON.parse(savedLocally);
 } catch (e) { /* private browsing / storage blocked - just use the embedded copy */ }
 
+let POSTS = JSON.parse(document.getElementById("blog-data").textContent);
+try {
+  const savedPostsLocally = localStorage.getItem(POSTS_STORAGE_KEY);
+  if (savedPostsLocally) POSTS = JSON.parse(savedPostsLocally);
+} catch (e) { /* private browsing / storage blocked - just use the embedded copy */ }
+
+let currentView = "flowers"; // "flowers" | "posts"
 let activeCategory = "All";
 let searchText = "";
+let postSearchText = "";
 let selectMode = false;
 let selectedIds = new Set();
 let editingId = null;
+let editingPostId = null;
 let pendingPhotos = [undefined, undefined, undefined]; // per slot: undefined = unchanged, dataURL = new/replaced, null = removed
+let pendingPostPhoto = undefined; // undefined = unchanged, dataURL = new/replaced, null = removed
 let artifactApi = null;
 let knownReadOnly = false;
 let bannerTimer = null;
@@ -684,6 +789,7 @@ let localOnlyNoticeShown = false;
 const GH_OWNER = "dhdraughting-sys";
 const GH_REPO = "mwlflorals";
 const GH_PATH = "catalogue-data.json";
+const GH_BLOG_PATH = "blog-posts.json";
 const GH_BRANCH = "main";
 const GH_TOKEN_KEY = "mwl-gh-token";
 
@@ -705,22 +811,25 @@ function utf8ToBase64(str) {
 }
 
 function setSyncDotState(state) {
-  const dot = document.getElementById("sync-status-dot");
-  if (!dot) return;
-  dot.classList.remove("connected", "error");
-  if (state === "connected") dot.classList.add("connected");
-  else if (state === "error") dot.classList.add("error");
+  ["sync-status-dot", "sync-status-dot-posts"].forEach((id) => {
+    const dot = document.getElementById(id);
+    if (!dot) return;
+    dot.classList.remove("connected", "error");
+    if (state === "connected") dot.classList.add("connected");
+    else if (state === "error") dot.classList.add("error");
+  });
 }
 
-// Pushes the full current item list to catalogue-data.json on GitHub.
+// Pushes the given data to the given path in the mwlflorals repo on
+// GitHub (catalogue-data.json for flowers, blog-posts.json for posts).
 // Silent (no banner) when no key is configured yet - that's the normal
 // not-set-up-yet state, not an error. Once a key IS configured, failures
 // do get a banner, since silently never publishing would be confusing.
-async function syncToWebsite(items) {
+async function syncFileToWebsite(path, data, commitMessagePrefix) {
   const token = getGhToken();
   if (!token) { setSyncDotState("idle"); return; }
 
-  const apiUrl = "https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + GH_PATH;
+  const apiUrl = "https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + path;
   const headers = {
     "Authorization": "Bearer " + token,
     "Accept": "application/vnd.github+json",
@@ -737,12 +846,12 @@ async function syncToWebsite(items) {
     // 404 means the file doesn't exist yet on the repo - fine, sha stays
     // undefined and the PUT below creates it fresh instead of updating.
 
-    const content = utf8ToBase64(JSON.stringify(items, null, 2));
+    const content = utf8ToBase64(JSON.stringify(data, null, 2));
     const putResp = await fetch(apiUrl, {
       method: "PUT",
       headers: Object.assign({ "Content-Type": "application/json" }, headers),
       body: JSON.stringify({
-        message: "Catalogue update from app — " + new Date().toISOString().slice(0, 16).replace("T", " "),
+        message: commitMessagePrefix + " — " + new Date().toISOString().slice(0, 16).replace("T", " "),
         content: content,
         sha: sha,
         branch: GH_BRANCH,
@@ -757,6 +866,13 @@ async function syncToWebsite(items) {
     const msg = (err && err.friendly) || "connection issue";
     showBanner("Saved on this device. Could not publish to the website (" + msg + ").", true);
   }
+}
+
+function syncToWebsite(items) {
+  return syncFileToWebsite(GH_PATH, items, "Catalogue update from app");
+}
+function syncBlogToWebsite(posts) {
+  return syncFileToWebsite(GH_BLOG_PATH, posts, "Blog update from app");
 }
 
 function ghErrorMessage(status) {
@@ -777,8 +893,8 @@ function closeSyncModal() {
 function updateSyncModalStatus() {
   const el = document.getElementById("sync-modal-status");
   el.textContent = getGhToken()
-    ? "Connected — flowers publish to the website automatically whenever you save."
-    : "Not connected — flowers only save on this device until this is set up.";
+    ? "Connected — flowers and posts publish to the website automatically whenever you save."
+    : "Not connected — flowers and posts only save on this device until this is set up.";
 }
 
 // A flower's photos, oldest-format-safe: newer items carry a "photos"
@@ -909,8 +1025,16 @@ function confirmCrop() {
   canvas.width = CROP_OUTPUT_PX; canvas.height = CROP_OUTPUT_PX;
   const ctx = canvas.getContext("2d");
   ctx.drawImage(document.getElementById("crop-img"), srcX, srcY, srcSize, srcSize, 0, 0, CROP_OUTPUT_PX, CROP_OUTPUT_PX);
-  pendingPhotos[cropTargetSlot] = canvas.toDataURL("image/jpeg", 0.82);
-  renderPhotoSlots();
+  const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+  // cropTargetSlot is either a flower photo-slot index (0-2) or the
+  // literal string "post" for the blog post's single photo slot.
+  if (cropTargetSlot === "post") {
+    pendingPostPhoto = dataUrl;
+    renderPostPhotoSlot();
+  } else {
+    pendingPhotos[cropTargetSlot] = dataUrl;
+    renderPhotoSlots();
+  }
   closeCropModal();
 }
 
@@ -1007,10 +1131,81 @@ function updateSelectBar() {
   document.getElementById("select-count").textContent = selectedIds.size + " selected";
 }
 
+function filteredPosts() {
+  let list = POSTS.slice();
+  const q = postSearchText.trim().toLowerCase();
+  if (q) list = list.filter((p) => (p.title || "").toLowerCase().includes(q) || (p.body || "").toLowerCase().includes(q));
+  list.sort((a, b) => (b.date || "").localeCompare(a.date || "")); // newest first
+  return list;
+}
+
+function renderPostsGrid() {
+  const grid = document.getElementById("posts-grid");
+  const empty = document.getElementById("posts-empty-state");
+  const list = filteredPosts();
+
+  if (!POSTS.length) {
+    grid.innerHTML = "";
+    empty.hidden = false;
+    return;
+  }
+  empty.hidden = true;
+
+  if (!list.length) {
+    grid.innerHTML = '<p style="color:var(--ink-soft);grid-column:1/-1;padding:24px 0;">No posts match your search.</p>';
+    return;
+  }
+
+  grid.innerHTML = list.map((post) => {
+    const metaBits = [];
+    if (post.date) metaBits.push(escapeHtml(post.date));
+    if (post.author) metaBits.push("by " + escapeHtml(post.author));
+    return (
+      '<div class="card" data-post-id="' + post.id + '">' +
+        '<div class="card-photo">' +
+          (post.photo ? '<img src="' + post.photo + '" alt="' + escapeHtml(post.title) + '" loading="lazy" />' : '<span class="placeholder">📰</span>') +
+        "</div>" +
+        '<div class="card-body">' +
+          (metaBits.length ? '<div class="card-meta">' + metaBits.join(" &middot; ") + "</div>" : "") +
+          '<div class="card-name">' + escapeHtml(post.title) + "</div>" +
+          '<div class="card-snippet">' + escapeHtml(post.body) + "</div>" +
+        "</div>" +
+        '<div class="card-actions">' +
+          '<button type="button" class="btn small" data-edit-post="' + post.id + '">Edit</button>' +
+        "</div>" +
+      "</div>"
+    );
+  }).join("");
+
+  grid.querySelectorAll("[data-edit-post]").forEach((btn) =>
+    btn.addEventListener("click", () => openPostModal(POSTS.find((p) => p.id === btn.dataset.editPost)))
+  );
+}
+
+function applyViewVisibility() {
+  const isFlowers = currentView === "flowers";
+  document.getElementById("view-tab-flowers").classList.toggle("active", isFlowers);
+  document.getElementById("view-tab-posts").classList.toggle("active", !isFlowers);
+  document.getElementById("flowers-toolbar").hidden = !isFlowers;
+  document.getElementById("posts-toolbar").hidden = isFlowers;
+  document.getElementById("chips").hidden = !isFlowers;
+  document.getElementById("grid").hidden = !isFlowers;
+  document.getElementById("empty-state").hidden = !isFlowers || ITEMS.length > 0;
+  document.getElementById("posts-grid").hidden = isFlowers;
+  document.getElementById("posts-empty-state").hidden = isFlowers || POSTS.length > 0;
+}
+
+function setView(view) {
+  currentView = view;
+  render();
+}
+
 function render() {
   renderChips();
   renderGrid();
+  renderPostsGrid();
   updateSelectBar();
+  applyViewVisibility();
 }
 
 function toggleSelect(id) {
@@ -1071,6 +1266,47 @@ function closeModal() {
 }
 
 // ---------------------------------------------------------------
+// Add / Edit post modal
+// ---------------------------------------------------------------
+function renderPostPhotoSlot() {
+  const slot = document.getElementById("post-photo-slot");
+  if (!slot) return;
+  const existing = editingPostId ? POSTS.find((p) => p.id === editingPostId) : null;
+  const basePhoto = existing ? existing.photo || null : null;
+  const url = pendingPostPhoto === undefined ? basePhoto : pendingPostPhoto;
+  slot.innerHTML = url
+    ? '<img src="' + url + '" alt="" /><button type="button" class="slot-remove" id="post-photo-remove-btn" aria-label="Remove photo">&times;</button>'
+    : '<span class="slot-plus">+</span>';
+  slot.classList.toggle("filled", !!url);
+  const removeBtn = document.getElementById("post-photo-remove-btn");
+  if (removeBtn) {
+    removeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      pendingPostPhoto = null;
+      renderPostPhotoSlot();
+    });
+  }
+}
+
+function openPostModal(post) {
+  editingPostId = post ? post.id : null;
+  pendingPostPhoto = undefined;
+  document.getElementById("post-modal-title").textContent = post ? "Edit Post" : "Add Post";
+  document.getElementById("delete-post-btn").hidden = !post;
+  document.getElementById("post-title-input").value = post ? post.title || "" : "";
+  document.getElementById("post-body-input").value = post ? post.body || "" : "";
+  document.getElementById("post-date-input").value = post ? post.date || "" : new Date().toISOString().slice(0, 10);
+  document.getElementById("post-author-input").value = post ? post.author || "Marie" : "Marie";
+  renderPostPhotoSlot();
+  document.getElementById("post-modal-backdrop").hidden = false;
+  document.getElementById("post-title-input").focus();
+}
+
+function closePostModal() {
+  document.getElementById("post-modal-backdrop").hidden = true;
+}
+
+// ---------------------------------------------------------------
 // Save / delete -> persist
 // ---------------------------------------------------------------
 async function persist(newItems) {
@@ -1116,7 +1352,7 @@ async function persist(newItems) {
     return;
   }
   try {
-    const html = buildFullHtml(newItems);
+    const html = buildFullHtml(newItems, POSTS);
     await artifactApi.publish(html);
     // A successful publish reloads this view to the new version automatically.
   } catch (err) {
@@ -1125,6 +1361,58 @@ async function persist(newItems) {
       // Someone else just saved first — this view is already reloading to their version.
       return;
     }
+    if (code === "not_writer" || code === "not_granted") {
+      knownReadOnly = true;
+      showBanner("Saved on this device only — this view can't save centrally without edit access.", true);
+      return;
+    }
+    if (!localOnlyNoticeShown) {
+      localOnlyNoticeShown = true;
+      showBanner("Saved on this device. Could not sync centrally just now (" + (code || "connection issue") + ").", true);
+    }
+  }
+}
+
+async function persistPosts(newPosts) {
+  POSTS = newPosts;
+  render();
+
+  // Always save to THIS device first — same reasoning as persist() above.
+  try {
+    localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(newPosts));
+  } catch (e) { /* private browsing / storage blocked - nothing more we can do locally */ }
+
+  // Independent of the Claude-artifact sync below: pushes straight to the
+  // website's repo on GitHub whenever a website access key is configured.
+  syncBlogToWebsite(newPosts);
+
+  if (knownReadOnly) {
+    showBanner("You're viewing this catalogue without edit access, so that change was only saved on this device.", true);
+    return;
+  }
+  if (!window.claude || !window.claude.use) {
+    if (!localOnlyNoticeShown) {
+      localOnlyNoticeShown = true;
+      showBanner("Saved on this device.");
+    }
+    return;
+  }
+  if (!artifactApi) {
+    artifactApi = await window.claude.use("artifact").catch(() => null);
+  }
+  if (!artifactApi) {
+    if (!localOnlyNoticeShown) {
+      localOnlyNoticeShown = true;
+      showBanner("Saved on this device. Automatic syncing isn't available in this view right now.");
+    }
+    return;
+  }
+  try {
+    const html = buildFullHtml(ITEMS, newPosts);
+    await artifactApi.publish(html);
+  } catch (err) {
+    const code = err && err.code;
+    if (code === "conflict") return;
     if (code === "not_writer" || code === "not_granted") {
       knownReadOnly = true;
       showBanner("Saved on this device only — this view can't save centrally without edit access.", true);
@@ -1375,10 +1663,18 @@ function init() {
   populateCategorySelect();
   render();
 
+  document.getElementById("view-tab-flowers").addEventListener("click", () => setView("flowers"));
+  document.getElementById("view-tab-posts").addEventListener("click", () => setView("posts"));
+
   document.getElementById("add-btn").addEventListener("click", () => openModal(null));
   document.getElementById("modal-close-btn").addEventListener("click", closeModal);
   document.getElementById("modal-backdrop").addEventListener("click", (e) => { if (e.target.id === "modal-backdrop") closeModal(); });
   document.getElementById("search-input").addEventListener("input", (e) => { searchText = e.target.value; render(); });
+
+  document.getElementById("add-post-btn").addEventListener("click", () => openPostModal(null));
+  document.getElementById("post-modal-close-btn").addEventListener("click", closePostModal);
+  document.getElementById("post-modal-backdrop").addEventListener("click", (e) => { if (e.target.id === "post-modal-backdrop") closePostModal(); });
+  document.getElementById("post-search-input").addEventListener("input", (e) => { postSearchText = e.target.value; render(); });
 
   document.getElementById("photo-slots").addEventListener("click", (e) => {
     const slot = e.target.closest(".photo-slot");
@@ -1388,10 +1684,17 @@ function init() {
     fileInput.value = "";
     fileInput.click();
   });
+  document.getElementById("post-photo-slot").addEventListener("click", () => {
+    const fileInput = document.getElementById("photo-file-input");
+    fileInput.dataset.targetSlot = "post";
+    fileInput.value = "";
+    fileInput.click();
+  });
   document.getElementById("photo-file-input").addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    openCropper(file, Number(e.target.dataset.targetSlot));
+    const target = e.target.dataset.targetSlot;
+    openCropper(file, target === "post" ? "post" : Number(target));
   });
   document.getElementById("crop-zoom-input").addEventListener("input", (e) => {
     const stagePx = cropStageSize();
@@ -1464,6 +1767,35 @@ function init() {
     persist(newItems);
   });
 
+  document.getElementById("post-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const title = document.getElementById("post-title-input").value.trim();
+    const body = document.getElementById("post-body-input").value.trim();
+    if (!title || !body) { showBanner("Title and write-up are required.", true); return; }
+    const existing = editingPostId ? POSTS.find((p) => p.id === editingPostId) : null;
+    const basePhoto = existing ? existing.photo || null : null;
+    const finalPhoto = pendingPostPhoto === undefined ? basePhoto : pendingPostPhoto;
+    const post = {
+      id: editingPostId || makeId(),
+      title,
+      body,
+      date: document.getElementById("post-date-input").value || new Date().toISOString().slice(0, 10),
+      author: document.getElementById("post-author-input").value || "",
+      photo: finalPhoto || null,
+    };
+    const newPosts = existing ? POSTS.map((p) => (p.id === existing.id ? post : p)) : [...POSTS, post];
+    closePostModal();
+    persistPosts(newPosts);
+  });
+
+  document.getElementById("delete-post-btn").addEventListener("click", () => {
+    if (!editingPostId) return;
+    if (!confirm("Delete this post? This can't be undone.")) return;
+    const newPosts = POSTS.filter((p) => p.id !== editingPostId);
+    closePostModal();
+    persistPosts(newPosts);
+  });
+
   document.getElementById("select-toggle-btn").addEventListener("click", () => {
     selectMode = !selectMode;
     selectedIds.clear();
@@ -1487,6 +1819,7 @@ function init() {
   });
 
   document.getElementById("sync-settings-btn").addEventListener("click", openSyncModal);
+  document.getElementById("sync-settings-btn-posts").addEventListener("click", openSyncModal);
   document.getElementById("sync-close-btn").addEventListener("click", closeSyncModal);
   document.getElementById("sync-modal-backdrop").addEventListener("click", (e) => {
     if (e.target.id === "sync-modal-backdrop") closeSyncModal();
@@ -1497,7 +1830,7 @@ function init() {
     setGhToken(token);
     updateSyncModalStatus();
     setSyncDotState("connected");
-    showBanner("Website Sync connected. Add or edit a flower to publish it.");
+    showBanner("Website Sync connected. Add or edit a flower or post to publish it.");
     closeSyncModal();
   });
   document.getElementById("sync-disconnect-btn").addEventListener("click", () => {
@@ -1505,7 +1838,7 @@ function init() {
     document.getElementById("gh-token-input").value = "";
     updateSyncModalStatus();
     setSyncDotState("idle");
-    showBanner("Website Sync disconnected. Flowers will only save on this device.");
+    showBanner("Website Sync disconnected. Flowers and posts will only save on this device.");
   });
   setSyncDotState(getGhToken() ? "connected" : "idle");
 

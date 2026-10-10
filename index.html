@@ -3665,7 +3665,7 @@ function whRenderSales() {
         '<div class="wh-stat"><b>' + whPct(sum.margin) + '</b><span>Profit margin</span></div>' +
         '<div class="wh-stat"><b>' + sum.n + '</b><span>Sales made</span></div>' +
         '<div class="wh-stat"><b>' + sum.units + '</b><span>Items sold</span></div>' +
-        '<div class="wh-stat' + (sum.unpaid > 0 ? " warn" : "") + '"><b>' + whGBP(sum.unpaid) + '</b><span>Not paid yet</span></div>' +
+        '<div class="wh-stat' + (sum.unpaid > 0 ? " warn" : "") + '"><b>' + whGBP(sum.unpaid) + '</b><span>Still owed to you</span></div>' +
       '</div>' +
       (sum.miss ? '<div class="wh-sp-note">' + sum.miss + ' sale' + (sum.miss === 1 ? " includes" : "s include") + ' an item with no cost price, so the profit shown is higher than the real figure.</div>' : "") +
       (cancelled ? '<div class="wh-sp-note">' + cancelled + ' cancelled sale' + (cancelled === 1 ? " is" : "s are") + ' left out of these figures.</div>' : "") +

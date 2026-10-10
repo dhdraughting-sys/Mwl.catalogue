@@ -566,6 +566,90 @@
     .wh-label-code { font-size: 14pt; font-weight: 700; margin-top: 2mm; letter-spacing: 0.05em; }
     .wh-label-name { font-size: 9pt; margin-top: 1mm; overflow: hidden; max-height: 2.4em; }
   }
+  /* ---- Sales ---- */
+  .modal.wh-wide { max-width: 760px; width: 100%; }
+  .wh-sellscan { display: flex; gap: 8px; align-items: center; }
+  .wh-sellscan input { flex: 1; min-width: 0; }
+  .wh-sugg { display: flex; flex-direction: column; margin-top: 6px; border-radius: var(--radius-sm); overflow: hidden; }
+  .wh-sugg:empty { display: none; }
+  .wh-sugg-row { text-align: left; padding: 9px 12px; border: 1px solid var(--line); border-top: none; background: var(--surface); color: var(--ink); font: inherit; font-size: 0.88rem; cursor: pointer; }
+  .wh-sugg-row:first-child { border-top: 1px solid var(--line); }
+  .wh-sugg-row:hover { background: var(--surface-2); }
+  .wh-err.ok { color: var(--accent-deep); }
+  .wh-sl-lines { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 10px; }
+  .wh-sl-empty { text-align: center; color: var(--ink-soft); font-size: 0.9rem; padding: 18px 0; border: 1px dashed var(--line); border-radius: var(--radius-md); }
+  .wh-sl-line { display: grid; grid-template-columns: 44px 1fr auto; gap: 6px 10px; align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); position: relative; }
+  .wh-sl-line .wh-thumb.sm { width: 44px; height: 44px; font-size: 1.2rem; }
+  .wh-sl-line .wh-name.wrap { white-space: normal; }
+  .wh-sl-line .wh-sub.over { color: var(--warn); font-weight: 600; }
+  .wh-sl-q { display: flex; align-items: center; gap: 4px; grid-column: 2; }
+  .wh-sl-q .btn.small { padding: 4px 11px; font-size: 1.05rem; line-height: 1.2; }
+  .wh-sl-q input { width: 56px; text-align: center; padding: 6px 4px; }
+  .wh-sl-p { display: flex; align-items: center; gap: 3px; grid-column: 3; grid-row: 2; }
+  .wh-sl-p input { width: 78px; padding: 6px 6px; }
+  .wh-sl-t { grid-column: 3; grid-row: 1; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; padding-right: 22px; }
+  .wh-x { position: absolute; top: 2px; right: 4px; background: none; border: none; font-size: 1.3rem; color: var(--ink-soft); cursor: pointer; line-height: 1; padding: 2px 6px; }
+  .wh-sl-totals { display: flex; flex-direction: column; gap: 3px; align-items: flex-end; font-size: 0.9rem; margin-bottom: 4px; }
+  .wh-sl-totals div { display: flex; gap: 24px; justify-content: space-between; min-width: 190px; }
+  .wh-sl-totals span { color: var(--ink-soft); }
+  .wh-sl-totals .tot { font-size: 1.15rem; border-top: 1px solid var(--line); padding-top: 4px; margin-top: 2px; }
+  .wh-sl-totals .tot span { color: var(--ink); }
+  .modal textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); font: inherit; background: var(--surface); color: var(--ink); resize: vertical; }
+
+  .wh-rc-wrap { border: 1px solid var(--line); border-radius: var(--radius-md); background: #fff; color: #2c2115; padding: 6px; margin-bottom: 12px; max-height: 52vh; overflow: auto; }
+  .wh-rc { font-family: Arial, Helvetica, sans-serif; font-size: 0.9rem; padding: 14px; color: #2c2115; position: relative; }
+  .rc-biz { font-family: "Dancing Script", cursive; font-size: 1.9rem; color: #8f7350; text-align: center; line-height: 1.1; }
+  .rc-lines { text-align: center; font-size: 0.78rem; color: #6a5a48; margin-top: 4px; }
+  .rc-title { text-align: center; font-weight: 700; margin: 14px 0 2px; font-size: 1rem; letter-spacing: 0.04em; }
+  .rc-void { color: #ad4a37; border: 1px solid #ad4a37; padding: 0 6px; border-radius: 4px; font-size: 0.78rem; margin-left: 6px; }
+  .rc-meta { text-align: center; font-size: 0.82rem; color: #4a3d2e; margin-bottom: 10px; }
+  .rc-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  .rc-table th { text-align: left; border-bottom: 2px solid #2c2115; padding: 4px 3px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .rc-table td { padding: 5px 3px; border-bottom: 1px solid #e6dbca; vertical-align: top; }
+  .rc-table .r, .rc-sum .r { text-align: right; }
+  .rc-code { font-size: 0.7rem; color: #8a7862; }
+  .rc-sum { margin: 10px 0 4px auto; max-width: 220px; }
+  .rc-sum div { display: flex; justify-content: space-between; padding: 2px 0; font-size: 0.88rem; }
+  .rc-sum .rc-total { border-top: 2px solid #2c2115; margin-top: 4px; padding-top: 5px; font-size: 1.1rem; font-weight: 700; }
+  .rc-pay { text-align: right; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
+  .rc-note { font-size: 0.8rem; color: #6a5a48; margin-bottom: 6px; }
+  .rc-foot { text-align: center; font-size: 0.82rem; margin-top: 12px; color: #4a3d2e; }
+  .wh-rc.is-void .rc-table, .wh-rc.is-void .rc-sum { opacity: 0.55; text-decoration: line-through; }
+
+  body.wh-noscroll { overflow: hidden; }
+  .wh-sales-panel { position: fixed; inset: 0; z-index: 40; background: var(--bg); overflow: auto; }
+  .wh-sp-inner { max-width: 1000px; margin: 0 auto; padding: 16px 16px 60px; }
+  .wh-sp-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .wh-sp-head h2 { font-size: 1.4rem; }
+  .wh-sp-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .wh-sp-dates { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.82rem; color: var(--ink-soft); margin: 4px 0 14px; }
+  .wh-sp-dates input { margin-left: 6px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; }
+  .wh-sp-note { font-size: 0.8rem; color: var(--warn); margin: 0 0 8px; }
+  .wh-tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+  .wh-tbl { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .wh-tbl th { text-align: left; background: var(--surface-2); padding: 9px 10px; font-size: 0.7rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+  .wh-tbl td { padding: 9px 10px; border-top: 1px solid var(--line); }
+  .wh-tbl .r { text-align: right; font-variant-numeric: tabular-nums; }
+  .wh-tbl .neg { color: var(--danger); }
+  .wh-tbl tr.tot td { font-weight: 700; background: var(--surface-2); }
+  .wh-sp-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .wh-sp-cols { grid-template-columns: 1fr; } }
+  .wh-sale-list { display: flex; flex-direction: column; gap: 6px; }
+  .wh-sale-row { display: grid; grid-template-columns: 1.2fr 1.4fr auto auto; gap: 8px; align-items: center; text-align: left; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font: inherit; font-size: 0.85rem; cursor: pointer; }
+  .wh-sale-row .c { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .wh-sale-row .d { font-size: 0.72rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+  .wh-sale-row .d.paid { background: var(--surface-2); color: var(--accent-deep); }
+  .wh-sale-row .d.due { background: var(--warn-bg); color: var(--warn); }
+  .wh-sale-row .d.cancel { background: #f3dcd6; color: var(--danger); }
+  .wh-sale-row.void { opacity: 0.6; }
+  @media (max-width: 560px) { .wh-sale-row { grid-template-columns: 1fr auto; } .wh-sale-row .b { grid-column: 1; } .wh-sale-row .d { grid-column: 2; } }
+  @media print {
+    .wh-rc-print { padding: 0; max-width: 170mm; margin: 0 auto; }
+    .wh-rc-print .wh-rc { font-size: 11pt; }
+    .wh-rc-print .rc-biz { font-size: 26pt; }
+  }
+  .field-row > .field { min-width: 0; }
+  .field-row input, .field-row select { min-width: 0; }
 </style>
 </head>
 <body>
@@ -573,7 +657,7 @@
 <div id="banner" class="banner" hidden></div>
 
 <header class="topbar">
-  <div class="app-version">Version 1.10</div>
+  <div class="app-version">Version 1.11</div>
   <div class="eyebrow">Handmade Artificial Flower Arrangements</div>
   <div class="wordmark">Made With Love</div>
   <div class="topbar-sub">Flower catalogue — prices, costs, and printable descriptions</div>
@@ -2118,8 +2202,8 @@ const WH_CODE_PREFIX = "WH-";
 
 const WHS = {
   unlocked: false, pw: "", salt: null,
-  products: [], moves: [], thumbs: {}, full: {},
-  dirty: { products: false, days: {}, imgs: {} },
+  products: [], moves: [], thumbs: {}, full: {}, sales: [], settings: null,
+  dirty: { products: false, days: {}, imgs: {}, sdays: {} },
   shaCache: {},
   syncing: false, again: false, status: "",
   search: "", cat: "All", lowOnly: false,
@@ -2239,6 +2323,7 @@ async function whSaveLocal() {
     const blob = {
       salt: WHS.salt, products: WHS.products, moves: WHS.moves,
       thumbs: WHS.thumbs, dirty: WHS.dirty, shaCache: WHS.shaCache,
+      sales: WHS.sales, settings: WHS.settings,
     };
     await idbSet(WH_LOCAL_KEY, await WHCore.encrypt(blob, WHS.pw, WHS.salt));
   } catch (e) { /* best effort - the website copy is the master */ }
@@ -2247,14 +2332,16 @@ function whApplyBlob(b) {
   WHS.salt = b.salt || WHS.salt;
   WHS.products = b.products || [];
   WHS.moves = b.moves || [];
+  WHS.sales = b.sales || [];
+  WHS.settings = b.settings || null;
   WHS.thumbs = b.thumbs || {};
-  WHS.dirty = b.dirty || { products: false, days: {}, imgs: {} };
-  WHS.dirty.days = WHS.dirty.days || {}; WHS.dirty.imgs = WHS.dirty.imgs || {};
+  WHS.dirty = b.dirty || { products: false, days: {}, imgs: {}, sdays: {} };
+  WHS.dirty.days = WHS.dirty.days || {}; WHS.dirty.imgs = WHS.dirty.imgs || {}; WHS.dirty.sdays = WHS.dirty.sdays || {};
   WHS.shaCache = b.shaCache || {};
 }
 function whReset() {
-  WHS.products = []; WHS.moves = []; WHS.thumbs = {}; WHS.full = {};
-  WHS.dirty = { products: false, days: {}, imgs: {} }; WHS.shaCache = {};
+  WHS.products = []; WHS.moves = []; WHS.thumbs = {}; WHS.full = {}; WHS.sales = []; WHS.settings = null;
+  WHS.dirty = { products: false, days: {}, imgs: {}, sdays: {} }; WHS.shaCache = {};
 }
 
 async function whUnlock(pw, create) {
@@ -2293,6 +2380,8 @@ function whSetStatus(s) {
   WHS.status = s;
   const el = whEl("wh-status");
   if (el) el.textContent = s;
+  const sp = whEl("sp-status");
+  if (sp) sp.textContent = s;
 }
 function whTimeNow() { return new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }); }
 
@@ -2315,6 +2404,7 @@ async function whSync() {
     WHS.syncing = false;
     await whSaveLocal();
     whRenderList();
+    whRenderSalesIfOpen();
     if (WHS.again) { WHS.again = false; whSync(); }
     else whLoadThumbs();
   }
@@ -2325,18 +2415,20 @@ async function whSyncOnce() {
 
   // 1. product list (pull + merge, push later if needed)
   const rp = await whRead(WH_PRODUCTS);
-  let remoteProducts = [];
+  let remoteProducts = [], remoteSettings = null;
   if (rp) {
     const salt = WHCore.saltOf(rp.text);
     if (WHS.salt && salt && salt !== WHS.salt) throw { friendly: "stock was set up again elsewhere - lock and unlock" };
     WHS.salt = salt || WHS.salt;
-    try { remoteProducts = (await WHCore.decrypt(rp.text, pw)).products || []; }
+    try { const rd = await WHCore.decrypt(rp.text, pw); remoteProducts = rd.products || []; remoteSettings = rd.settings || null; }
     catch (e) { throw { friendly: "password doesn't match" }; }
   }
   const mergedP = whMergeProducts(WHS.products, remoteProducts);
   WHS.products = mergedP;
   const canon = (arr) => JSON.stringify(arr.slice().sort((a, b) => String(a.id).localeCompare(String(b.id))));
-  const productsDiffer = !rp || canon(mergedP) !== canon(remoteProducts);
+  if (remoteSettings && (!WHS.settings || String(remoteSettings.updated || "") > String(WHS.settings.updated || ""))) WHS.settings = remoteSettings;
+  const settingsDiffer = !!WHS.settings && JSON.stringify(WHS.settings) !== JSON.stringify(remoteSettings);
+  const productsDiffer = !rp || settingsDiffer || canon(mergedP) !== canon(remoteProducts);
 
   // 2. pull every movement file we haven't seen
   const months = (await whList(WH_BASE + "moves")).filter((x) => x.type === "dir");
@@ -2354,6 +2446,26 @@ async function whSyncOnce() {
       try { remoteMoves = (await WHCore.decrypt(r.text, pw)).moves || []; }
       catch (e) { throw { friendly: "password doesn't match" }; }
       WHS.moves = whMergeMoves(WHS.moves, remoteMoves);
+      WHS.shaCache[f.path] = r.sha;
+    }));
+  }
+
+  // 2b. pull every sales file we haven't seen
+  const sMonths = (await whList(WH_SALE_BASE.slice(0, -1))).filter((x) => x.type === "dir");
+  const sFiles = [];
+  for (const m of sMonths) {
+    const inM = await whList(WH_SALE_BASE + m.name);
+    inM.forEach((f) => { if (f.type === "file") sFiles.push(f); });
+  }
+  const sFresh = sFiles.filter((f) => WHS.shaCache[f.path] !== f.sha);
+  for (let i = 0; i < sFresh.length; i += 4) {
+    await Promise.all(sFresh.slice(i, i + 4).map(async (f) => {
+      const r = await whRead(f.path);
+      if (!r) return;
+      let rs;
+      try { rs = (await WHCore.decrypt(r.text, pw)).sales || []; }
+      catch (e) { throw { friendly: "password doesn't match" }; }
+      WHS.sales = whMergeSales(WHS.sales, rs);
       WHS.shaCache[f.path] = r.sha;
     }));
   }
@@ -2386,6 +2498,24 @@ async function whSyncOnce() {
     }
   } catch (e) { Object.assign(WHS.dirty.days, days); throw e; }
 
+  // 4b. push each changed day of sales
+  const sdays = WHS.dirty.sdays; WHS.dirty.sdays = {};
+  try {
+    for (const day of Object.keys(sdays)) {
+      const path = whSalesPath(day);
+      const r = await whRead(path);
+      let remoteSales = [];
+      if (r) { try { remoteSales = (await WHCore.decrypt(r.text, pw)).sales || []; } catch (e) { throw { friendly: "password doesn't match" }; } }
+      const daySales = whMergeSales(WHS.sales.filter((x) => whDayOf(x) === day), remoteSales);
+      WHS.sales = whMergeSales(WHS.sales, daySales);
+      if (!r || whCanon(daySales) !== whCanon(remoteSales)) {
+        const text = await WHCore.encrypt({ v: 1, sales: daySales }, pw, WHS.salt);
+        const sha = await whWrite(path, text, r && r.sha);
+        if (sha) WHS.shaCache[path] = sha;
+      } else if (r) WHS.shaCache[path] = r.sha;
+    }
+  } catch (e) { Object.assign(WHS.dirty.sdays, sdays); throw e; }
+
   // 5. quantities for the website's read-only page
   const snap = whQtyMap();
   const rs = await whRead(WH_SNAP);
@@ -2395,12 +2525,21 @@ async function whSyncOnce() {
     await whWrite(WH_SNAP, await WHCore.encrypt({ v: 1, at: whNow(), s: snap }, pw, WHS.salt), rs && rs.sha);
   }
 
+  // 5b. sales summary for the website's Staff page
+  const ss = whSalesSnapshot();
+  const rss = await whRead(WH_SALES_SNAP);
+  if (WHS.sales.length || rss) {
+    let sSame = false;
+    if (rss) { try { const old = await WHCore.decrypt(rss.text, pw); sSame = JSON.stringify({ days: old.days, recent: old.recent }) === JSON.stringify(ss); } catch (e) { /* rewrite */ } }
+    if (!sSame) await whWrite(WH_SALES_SNAP, await WHCore.encrypt({ v: 1, at: whNow(), days: ss.days, recent: ss.recent }, pw, WHS.salt), rss && rss.sha);
+  }
+
   // 6. product list last
   const wasDirty = WHS.dirty.products;
   if (productsDiffer || wasDirty) {
     WHS.dirty.products = false;
     try {
-      const text = await WHCore.encrypt({ v: 1, products: WHS.products }, pw, WHS.salt);
+      const text = await WHCore.encrypt({ v: 1, products: WHS.products, settings: WHS.settings }, pw, WHS.salt);
       await whWrite(WH_PRODUCTS, text, rp && rp.sha);
     } catch (e) { WHS.dirty.products = true; throw e; }
   }
@@ -2437,8 +2576,9 @@ async function whLoadFull(p) {
 }
 
 // ---------- changes made on this phone ----------
-function whAddMove(pid, q, type, note, by) {
+function whAddMove(pid, q, type, note, by, extra) {
   const m = { id: makeId(), pid: pid, q: q, t: type, n: note || "", by: by || "", at: whNow() };
+  if (extra) Object.assign(m, extra);
   WHS.moves.push(m);
   WHS.dirty.days[whDayOf(m)] = true;
   return m;
@@ -2551,6 +2691,8 @@ function whRenderShell() {
       '<div class="search-wrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>' +
       '<input id="wh-search" type="text" placeholder="Search code, name, supplier..." autocomplete="off" value="' + escapeHtml(WHS.search) + '" /></div>' +
       '<button class="btn primary" id="wh-new" type="button">+ New product</button>' +
+      '<button class="btn primary" id="wh-sell" type="button">Sell</button>' +
+      '<button class="btn" id="wh-sales" type="button">Sales</button>' +
       '<button class="btn" id="wh-scan" type="button">Scan</button>' +
       '<button class="btn" id="wh-labels" type="button">Labels</button>' +
       '<button class="btn" id="wh-export" type="button">Export</button>' +
@@ -2562,6 +2704,8 @@ function whRenderShell() {
     '<div class="wh-list" id="wh-list"></div>';
   whEl("wh-search").addEventListener("input", (e) => { WHS.search = e.target.value; whRenderList(); });
   whEl("wh-new").addEventListener("click", () => whOpenProduct(null));
+  whEl("wh-sell").addEventListener("click", whOpenSell);
+  whEl("wh-sales").addEventListener("click", whOpenSales);
   whEl("wh-scan").addEventListener("click", whOpenScanner);
   whEl("wh-labels").addEventListener("click", () => whOpenLabels(null));
   whEl("wh-export").addEventListener("click", whExportCsv);
@@ -2571,6 +2715,7 @@ function whRenderShell() {
 }
 
 function whLock() {
+  whCloseSales();
   WHS.unlocked = false; WHS.pw = ""; whReset();
   try { localStorage.removeItem(WH_PW_KEY); } catch (e) { /* ignore */ }
   whOpenTab();
@@ -2647,12 +2792,12 @@ function whRenderList() {
 }
 
 // ---------- modal helper ----------
-function whModal(html, onMount) {
+function whModal(html, onMount, wide) {
   whCloseModal();
   const back = document.createElement("div");
   back.className = "modal-backdrop wh-modal-back";
   back.id = "wh-modal-back";
-  back.innerHTML = '<div class="modal" role="dialog" aria-modal="true"><button class="modal-close" id="wh-modal-x" type="button" aria-label="Close">&times;</button>' + html + "</div>";
+  back.innerHTML = '<div class="modal' + (wide ? " wh-wide" : "") + '" role="dialog" aria-modal="true"><button class="modal-close" id="wh-modal-x" type="button" aria-label="Close">&times;</button>' + html + "</div>";
   document.body.appendChild(back);
   back.addEventListener("click", (e) => { if (e.target === back) whCloseModal(); });
   whEl("wh-modal-x").addEventListener("click", whCloseModal);
@@ -2812,7 +2957,7 @@ function whOpenDetail(pid) {
   if (!p) return;
   const n = whQty(pid), lvl = whLevel(p, n);
   const hist = WHS.moves.filter((m) => m.pid === pid).sort((a, b) => String(b.at).localeCompare(String(a.at))).slice(0, 40);
-  const label = { new: "Opening stock", add: "Added", out: "Taken out", count: "Stocktake" };
+  const label = { new: "Opening stock", add: "Added", out: "Taken out", count: "Stocktake", sale: "Sold", return: "Sale cancelled" };
   whModal(
     '<h2>' + escapeHtml(p.code) + ' - ' + escapeHtml(p.name) + '</h2>' +
     '<div class="wh-detail-photo" id="wh-dphoto">' + (WHS.thumbs[whThumbKey(p)] ? '<img src="' + WHS.thumbs[whThumbKey(p)] + '" alt="" />' : "&#128230;") + '</div>' +
@@ -2968,6 +3113,640 @@ function whExportCsv() {
   a.download = "stock-" + new Date().toISOString().slice(0, 10) + ".csv";
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+// ===================================================================
+// Sales (v1.11): scan items, take the customer's details, give a
+// receipt, take the stock off, and total up takings against cost.
+// Each sale is a small record kept scrambled (WHCore) under
+//   wh/sales/YYYY-MM/DATE.dat   one file per day of sales
+//   wh/sales.dat                a summary for the website's Staff page
+// The stock itself still comes off through normal stock movements
+// (type "sale"), so the quantity rules above are unchanged.
+// ===================================================================
+const WH_SALE_BASE = WH_BASE + "sales/";
+const WH_SALES_SNAP = WH_BASE + "sales.dat";
+const WH_CAM_KEY = "mwl-wh-cam";
+
+function whSalesPath(day) { return WH_SALE_BASE + day.slice(0, 7) + "/" + day + ".dat"; }
+function whSaleStamp(s) { return String(s.upd || s.at || ""); }
+function whMergeSales(local, remote) {
+  const byId = new Map();
+  (remote || []).concat(local || []).forEach((s) => {
+    if (!s || !s.id) return;
+    const c = byId.get(s.id);
+    if (!c || whSaleStamp(s) > whSaleStamp(c)) byId.set(s.id, s);
+  });
+  return Array.from(byId.values());
+}
+function whCanon(arr) { return JSON.stringify(arr.slice().sort((a, b) => String(a.id).localeCompare(String(b.id)))); }
+
+const whR2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
+function whGBP(n) { const v = whR2(n); return (v < 0 ? "-" : "") + "£" + Math.abs(v).toFixed(2); }
+function whPct(n) { return isFinite(n) ? (Math.round(n * 1000) / 10).toFixed(1) + "%" : "-"; }
+function whLocalDay(iso) {
+  const d = new Date(iso);
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function whAddDays(day, n) {
+  const a = day.split("-").map(Number);
+  return whLocalDay(new Date(a[0], a[1] - 1, a[2] + n).toISOString());
+}
+function whNiceDay(day) {
+  const a = day.split("-").map(Number);
+  return new Date(a[0], a[1] - 1, a[2]).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+}
+function whSaleNo() {
+  const day = whLocalDay(new Date().toISOString());
+  let n = WHS.sales.filter((s) => whLocalDay(s.at) === day).length + 1;
+  const base = "S" + day.slice(2, 4) + day.slice(5, 7) + day.slice(8, 10) + "-";
+  const used = new Set(WHS.sales.map((s) => s.no));
+  while (used.has(base + String(n).padStart(2, "0"))) n++;
+  return base + String(n).padStart(2, "0");
+}
+function whSettings() {
+  return Object.assign({ biz: "Made With Love", lines: "mwlflorals.co.uk", footer: "Thank you for your custom." }, WHS.settings || {});
+}
+function whSaleTotals(lines, disc) {
+  let sub = 0, cost = 0, miss = false;
+  lines.forEach((l) => {
+    sub += l.q * l.price;
+    if (l.cost === null || l.cost === undefined || l.cost === "") miss = true; else cost += l.q * Number(l.cost);
+  });
+  sub = whR2(sub); cost = whR2(cost);
+  const d = Math.min(Math.max(whR2(disc), 0), sub);
+  return { sub: sub, disc: d, total: whR2(sub - d), cost: cost, miss: miss };
+}
+function whItemCount(s) { return s.lines.reduce((a, l) => a + l.q, 0); }
+
+function whBeep() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) {
+      whBeep.ctx = whBeep.ctx || new AC();
+      const o = whBeep.ctx.createOscillator(), g = whBeep.ctx.createGain();
+      o.frequency.value = 880; g.gain.value = 0.08;
+      o.connect(g); g.connect(whBeep.ctx.destination);
+      o.start(); o.stop(whBeep.ctx.currentTime + 0.08);
+    }
+  } catch (e) { /* ignore */ }
+  try { if (navigator.vibrate) navigator.vibrate(40); } catch (e) { /* ignore */ }
+}
+
+// ---------- making / changing a sale ----------
+function whCreateSale(o) {
+  const t = whSaleTotals(o.lines, o.disc);
+  const at = whNow();
+  const sale = {
+    id: makeId(), no: whSaleNo(), at: at, by: o.by,
+    cust: { name: o.name, phone: o.phone || "", email: o.email || "" },
+    lines: o.lines.map((l) => ({ pid: l.pid, code: l.code, name: l.name, q: l.q, price: whR2(l.price), cost: l.cost === undefined ? null : l.cost })),
+    sub: t.sub, disc: t.disc, total: t.total, cost: t.cost, miss: t.miss,
+    pay: o.pay, paid: !!o.pay, vat: "N/A", note: o.note || "", void: false, upd: at,
+  };
+  if (sale.paid) sale.paidAt = at;
+  WHS.sales.push(sale);
+  WHS.dirty.sdays[whDayOf(sale)] = true;
+  sale.lines.forEach((l) => whAddMove(l.pid, -l.q, "sale", "Sale " + sale.no, o.by, { sid: sale.id }));
+  return sale;
+}
+function whTouchSale(s) {
+  s.upd = whNow();
+  WHS.dirty.sdays[whDayOf(s)] = true;
+}
+function whVoidSale(s) {
+  if (s.void) return;
+  s.void = true; s.voidAt = whNow(); s.voidBy = whWho();
+  s.lines.forEach((l) => whAddMove(l.pid, l.q, "return", "Sale " + s.no + " cancelled", whWho(), { sid: s.id }));
+  whTouchSale(s);
+}
+
+// ---------- receipt ----------
+function whReceiptHtml(s) {
+  const st = whSettings();
+  const e = escapeHtml;
+  const when = new Date(s.at).toLocaleString("en-GB", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  const rows = s.lines.map((l) =>
+    '<tr><td>' + e(l.name) + '<div class="rc-code">' + e(l.code) + '</div></td><td class="r">' + l.q + '</td><td class="r">' + whGBP(l.price) + '</td><td class="r">' + whGBP(l.q * l.price) + '</td></tr>').join("");
+  return '<div class="wh-rc' + (s.void ? " is-void" : "") + '">' +
+    '<div class="rc-biz">' + e(st.biz) + '</div>' +
+    (st.lines ? '<div class="rc-lines">' + e(st.lines).replace(/\n/g, "<br>") + '</div>' : "") +
+    '<div class="rc-title">Receipt ' + e(s.no) + (s.void ? ' <span class="rc-void">CANCELLED</span>' : "") + '</div>' +
+    '<div class="rc-meta">' + e(when) + '<br>Customer: ' + e(s.cust.name) + '</div>' +
+    '<table class="rc-table"><thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Price</th><th class="r">Total</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="rc-sum"><div><span>Subtotal</span><b>' + whGBP(s.sub) + '</b></div>' +
+    (s.disc > 0 ? '<div><span>Discount</span><b>-' + whGBP(s.disc) + '</b></div>' : "") +
+    '<div><span>VAT</span><b>N/A</b></div>' +
+    '<div class="rc-total"><span>Total</span><b>' + whGBP(s.total) + '</b></div></div>' +
+    '<div class="rc-pay">' + (s.paid ? "Paid" + (s.pay ? " by " + e(s.pay) : "") : "Payment due") + '</div>' +
+    (s.note ? '<div class="rc-note">' + e(s.note) + '</div>' : "") +
+    (st.footer ? '<div class="rc-foot">' + e(st.footer) + '</div>' : "") +
+    '</div>';
+}
+function whReceiptText(s) {
+  const st = whSettings();
+  const when = new Date(s.at).toLocaleString("en-GB", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  const out = [st.biz];
+  if (st.lines) out.push(st.lines);
+  out.push("", "Receipt " + s.no + (s.void ? " (CANCELLED)" : ""), when, "Customer: " + s.cust.name, "");
+  s.lines.forEach((l) => out.push(l.name + " (" + l.code + ")  " + l.q + " x " + whGBP(l.price) + " = " + whGBP(l.q * l.price)));
+  out.push("");
+  if (s.disc > 0) out.push("Discount: -" + whGBP(s.disc));
+  out.push("VAT: N/A", "Total: " + whGBP(s.total), s.paid ? "Paid" + (s.pay ? " by " + s.pay : "") : "Payment due");
+  if (st.footer) out.push("", st.footer);
+  return out.join("\n");
+}
+function whPrintReceipt(s) {
+  document.getElementById("print-root").innerHTML = '<div class="print-card wh-rc-print">' + whReceiptHtml(s) + "</div>";
+  window.print();
+}
+async function whShareReceipt(s, how) {
+  const text = whReceiptText(s);
+  const subj = whSettings().biz + " receipt " + s.no;
+  if (how === "email") { location.href = "mailto:" + encodeURIComponent(s.cust.email) + "?subject=" + encodeURIComponent(subj) + "&body=" + encodeURIComponent(text); return; }
+  if (how === "sms") { location.href = "sms:" + String(s.cust.phone).replace(/\s/g, "") + "?&body=" + encodeURIComponent(text); return; }
+  if (navigator.share) { try { await navigator.share({ title: subj, text: text }); } catch (e) { /* cancelled */ } return; }
+  try { await navigator.clipboard.writeText(text); showBanner("Receipt text copied - paste it into a message."); }
+  catch (e) { showBanner("Could not copy the receipt.", true); }
+}
+
+// receipt screen: shown straight after a sale, and from the sales list
+function whOpenReceipt(id, justSold) {
+  const s = WHS.sales.find((x) => x.id === id);
+  if (!s) return;
+  const touch = (navigator.maxTouchPoints || 0) > 0;
+  whModal(
+    (justSold ? '<h2>Sale saved</h2><div class="modal-sub">Stock has been taken off. Give or send the receipt below.</div>' : '<h2>Sale ' + escapeHtml(s.no) + '</h2>') +
+    '<div class="wh-rc-wrap">' + whReceiptHtml(s) + '</div>' +
+    '<div class="modal-actions wh-actions">' +
+      '<button type="button" class="btn primary" id="rc-print">Print receipt</button>' +
+      (s.cust.email ? '<button type="button" class="btn" id="rc-email">Email</button>' : "") +
+      (s.cust.phone && touch ? '<button type="button" class="btn" id="rc-sms">Text</button>' : "") +
+      '<button type="button" class="btn" id="rc-share">' + (navigator.share ? "Share" : "Copy text") + '</button>' +
+      (justSold ? '<button type="button" class="btn" id="rc-new">New sale</button>' : "") +
+    '</div>' +
+    (justSold ? "" :
+      '<div class="modal-actions wh-actions">' +
+        '<button type="button" class="btn" id="rc-edit">Edit customer</button>' +
+        (!s.void && !s.paid ? '<button type="button" class="btn" id="rc-paid">Mark as paid</button>' : "") +
+        (!s.void ? '<button type="button" class="btn ghost" id="rc-void">Cancel sale</button>' : "") +
+      '</div>' +
+      (s.void ? '<div class="modal-sub">Cancelled ' + new Date(s.voidAt).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) + ' - the items went back into stock.</div>' : "")),
+    () => {
+      whEl("rc-print").addEventListener("click", () => whPrintReceipt(s));
+      if (whEl("rc-email")) whEl("rc-email").addEventListener("click", () => whShareReceipt(s, "email"));
+      if (whEl("rc-sms")) whEl("rc-sms").addEventListener("click", () => whShareReceipt(s, "sms"));
+      whEl("rc-share").addEventListener("click", () => whShareReceipt(s, "share"));
+      if (whEl("rc-new")) whEl("rc-new").addEventListener("click", whOpenSell);
+      if (whEl("rc-edit")) whEl("rc-edit").addEventListener("click", () => whOpenEditSale(s.id));
+      if (whEl("rc-paid")) whEl("rc-paid").addEventListener("click", () => whOpenMarkPaid(s.id));
+      if (whEl("rc-void")) whEl("rc-void").addEventListener("click", () => {
+        if (!confirm("Cancel sale " + s.no + "? The items go back into stock and the sale is taken off your sales figures. The receipt stays on record as cancelled.")) return;
+        whVoidSale(s);
+        whCloseModal(); showBanner("Sale " + s.no + " cancelled - stock put back.");
+        whCommit(); whRenderSalesIfOpen();
+      });
+    },
+    true
+  );
+}
+function whOpenEditSale(id) {
+  const s = WHS.sales.find((x) => x.id === id);
+  if (!s) return;
+  whModal(
+    '<h2>Edit sale ' + escapeHtml(s.no) + '</h2><div class="modal-sub">Items and prices can\'t be changed. To correct them, cancel this sale and make a new one.</div>' +
+    '<form id="es-form">' +
+      '<div class="field"><label for="es-name">Customer name *</label><input id="es-name" required maxlength="80" value="' + escapeHtml(s.cust.name) + '" /></div>' +
+      '<div class="field-row"><div class="field"><label for="es-phone">Phone</label><input id="es-phone" type="tel" value="' + escapeHtml(s.cust.phone) + '" /></div>' +
+      '<div class="field"><label for="es-email">Email</label><input id="es-email" type="email" value="' + escapeHtml(s.cust.email) + '" /></div></div>' +
+      '<div class="field"><label for="es-note">Note</label><input id="es-note" maxlength="120" value="' + escapeHtml(s.note) + '" /></div>' +
+      '<div class="modal-actions"><button type="submit" class="btn primary">Save</button></div></form>',
+    () => {
+      whEl("es-form").addEventListener("submit", (ev) => {
+        ev.preventDefault();
+        const name = whEl("es-name").value.trim(); if (!name) return;
+        s.cust = { name: name, phone: whEl("es-phone").value.trim(), email: whEl("es-email").value.trim() };
+        s.note = whEl("es-note").value.trim();
+        whTouchSale(s); whCommit(); whRenderSalesIfOpen();
+        whOpenReceipt(s.id, false);
+      });
+    }
+  );
+}
+function whOpenMarkPaid(id) {
+  const s = WHS.sales.find((x) => x.id === id);
+  if (!s) return;
+  whModal(
+    '<h2>Mark ' + escapeHtml(s.no) + ' as paid</h2><div class="modal-sub">' + whGBP(s.total) + ' from ' + escapeHtml(s.cust.name) + '</div>' +
+    '<div class="field"><label for="mp-pay">How did they pay?</label><select id="mp-pay"><option>Cash</option><option>Card</option><option>Bank transfer</option></select></div>' +
+    '<div class="modal-actions"><button type="button" class="btn primary" id="mp-go">Mark as paid</button></div>',
+    () => {
+      whEl("mp-go").addEventListener("click", () => {
+        s.paid = true; s.pay = whEl("mp-pay").value; s.paidAt = whNow();
+        whTouchSale(s); whCommit(); whRenderSalesIfOpen();
+        whOpenReceipt(s.id, false);
+      });
+    }
+  );
+}
+
+// ---------- the Sell screen ----------
+function whOpenSell() {
+  const lines = []; // { pid, q, price }
+  const prod = (pid) => WHS.products.find((x) => x.id === pid);
+  const known = new Map();
+  WHS.sales.forEach((s) => { if (s.cust && s.cust.name) known.set(s.cust.name.toLowerCase(), s.cust); });
+  const custs = Array.from(known.values());
+  let lastScan = { text: "", at: 0 };
+
+  whModal(
+    '<h2>New sale</h2><div class="modal-sub">Scan each sticker, or type a code or name and press Enter.</div>' +
+    '<div class="field"><div class="wh-sellscan"><input id="sl-code" autocomplete="off" autocapitalize="characters" placeholder="Scan or type a code / name" />' +
+    '<button type="button" class="btn" id="sl-cam">Camera</button></div><div class="wh-sugg" id="sl-sugg"></div></div>' +
+    '<div class="wh-video-wrap" id="sl-vwrap" hidden><video id="wh-video" playsinline muted></video></div>' +
+    '<div class="wh-err" id="sl-msg"></div>' +
+    '<div id="sl-lines" class="wh-sl-lines"></div>' +
+    '<div class="wh-sl-totals" id="sl-totals"></div>' +
+    '<h3 class="wh-h3">Customer</h3>' +
+    '<div class="field"><label for="sl-name">Name *</label><div class="wh-sellscan"><input id="sl-name" list="sl-names" maxlength="80" autocomplete="off" />' +
+    '<button type="button" class="btn small" id="sl-walkin">Walk-in</button></div>' +
+    '<datalist id="sl-names">' + custs.map((c) => '<option value="' + escapeHtml(c.name) + '">').join("") + '</datalist></div>' +
+    '<div class="field-row"><div class="field"><label for="sl-phone">Phone (optional)</label><input id="sl-phone" type="tel" maxlength="30" /></div>' +
+    '<div class="field"><label for="sl-email">Email (optional)</label><input id="sl-email" type="email" maxlength="80" /></div></div>' +
+    '<div class="field-row"><div class="field"><label for="sl-disc">Discount (£)</label><input id="sl-disc" type="number" min="0" step="0.01" inputmode="decimal" /></div>' +
+    '<div class="field"><label for="sl-pay">Payment</label><select id="sl-pay"><option>Cash</option><option>Card</option><option>Bank transfer</option><option value="">Not paid yet</option></select></div></div>' +
+    '<div class="field-row"><div class="field"><label for="sl-note">Note (optional)</label><input id="sl-note" maxlength="120" /></div>' +
+    '<div class="field"><label for="sl-by">Sold by</label><select id="sl-by"><option>Darren</option><option>Marie</option></select></div></div>' +
+    '<div class="modal-actions"><button type="button" class="btn primary" id="sl-done">Complete sale</button></div>',
+    () => {
+      whSync(); // pick up the latest stock and sales from the other devices
+      whEl("sl-by").value = whWho();
+      const msg = (t, bad) => { const el = whEl("sl-msg"); if (el) { el.textContent = t || ""; el.classList.toggle("ok", !bad && !!t); } };
+
+      const totals = () => {
+        const d = whEl("sl-disc") ? Number(whEl("sl-disc").value) || 0 : 0;
+        const t = whSaleTotals(lines, d);
+        whEl("sl-totals").innerHTML =
+          '<div><span>Subtotal</span><b>' + whGBP(t.sub) + '</b></div>' +
+          (t.disc > 0 ? '<div><span>Discount</span><b>-' + whGBP(t.disc) + '</b></div>' : "") +
+          '<div><span>VAT</span><b>N/A</b></div>' +
+          '<div class="tot"><span>Total</span><b>' + whGBP(t.total) + '</b></div>';
+        whEl("sl-done").textContent = lines.length ? "Complete sale - " + whGBP(t.total) : "Complete sale";
+      };
+      const render = () => {
+        const qty = whQtyMap();
+        const box = whEl("sl-lines");
+        if (!lines.length) { box.innerHTML = '<div class="wh-sl-empty">Nothing scanned yet.</div>'; totals(); return; }
+        box.innerHTML = lines.map((l, i) => {
+          const p = prod(l.pid), have = qty[l.pid] || 0, th = WHS.thumbs[whThumbKey(p)];
+          return '<div class="wh-sl-line" data-i="' + i + '">' +
+            '<div class="wh-thumb sm">' + (th ? '<img src="' + th + '" alt="" />' : "&#128230;") + '</div>' +
+            '<div class="wh-main"><div class="wh-code">' + escapeHtml(p.code) + '</div><div class="wh-name wrap">' + escapeHtml(p.name) + '</div>' +
+            '<div class="wh-sub' + (l.q > have ? " over" : "") + '">' + (l.q > have ? "Only " + have + " in stock" : have + " in stock") + '</div></div>' +
+            '<div class="wh-sl-q"><button type="button" class="btn small" data-dec aria-label="One less">&minus;</button>' +
+            '<input type="number" class="sl-qin" min="1" step="1" value="' + l.q + '" aria-label="Quantity" />' +
+            '<button type="button" class="btn small" data-inc aria-label="One more">+</button></div>' +
+            '<div class="wh-sl-p"><span>£</span><input type="number" class="sl-pin" min="0" step="0.01" value="' + l.price + '" aria-label="Price each" /></div>' +
+            '<div class="wh-sl-t">' + whGBP(l.q * l.price) + '</div>' +
+            '<button type="button" class="wh-x" data-rm aria-label="Remove">&times;</button></div>';
+        }).join("");
+        totals();
+      };
+      const addLine = (p) => {
+        const ex = lines.find((l) => l.pid === p.id);
+        if (ex) ex.q++; else lines.push({ pid: p.id, q: 1, price: (p.price === null || p.price === undefined || isNaN(Number(p.price))) ? 0 : Number(p.price) });
+        whBeep();
+        const noPrice = !(Number(p.price) > 0);
+        msg("Added " + p.name + (noPrice ? " - no wholesale price is set, type one in." : ""), noPrice);
+        render();
+      };
+      const handleScan = (text) => {
+        const t = String(text || "").trim();
+        const now = Date.now();
+        if (!t || (t === lastScan.text && now - lastScan.at < 1600)) return;
+        lastScan = { text: t, at: now };
+        const p = whFindByCode(t);
+        if (!p) { msg("No product with code " + t.slice(0, 30) + ".", true); return; }
+        addLine(p);
+      };
+      const matches = (q) => {
+        q = q.trim().toLowerCase();
+        if (q.length < 2) return [];
+        return whActive().filter((p) => [p.code, p.name, p.category].some((v) => (v || "").toLowerCase().includes(q))).sort((a, b) => whCodeNum(a.code) - whCodeNum(b.code));
+      };
+      const codeIn = whEl("sl-code");
+      codeIn.addEventListener("input", () => {
+        const m = matches(codeIn.value).slice(0, 6);
+        whEl("sl-sugg").innerHTML = m.map((p) => '<button type="button" class="wh-sugg-row" data-p="' + p.id + '"><b>' + escapeHtml(p.code) + '</b> ' + escapeHtml(p.name) + '</button>').join("");
+      });
+      whEl("sl-sugg").addEventListener("click", (e) => {
+        const b = e.target.closest("[data-p]"); if (!b) return;
+        const p = prod(b.dataset.p); if (!p) return;
+        addLine(p); codeIn.value = ""; whEl("sl-sugg").innerHTML = ""; codeIn.focus();
+      });
+      codeIn.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        const v = codeIn.value.trim(); if (!v) return;
+        const exact = whFindByCode(v);
+        let p = exact;
+        if (!p) { const m = matches(v); if (m.length === 1) p = m[0]; else if (m.length > 1) { msg("Several match - tap the one you want.", true); return; } }
+        if (!p) { msg("No product matches \"" + v.slice(0, 30) + "\".", true); return; }
+        addLine(p); codeIn.value = ""; whEl("sl-sugg").innerHTML = ""; codeIn.focus();
+      });
+
+      // lines: + / - / remove / typed quantity / price
+      const box = whEl("sl-lines");
+      box.addEventListener("click", (e) => {
+        const row = e.target.closest(".wh-sl-line"); if (!row) return;
+        const l = lines[Number(row.dataset.i)]; if (!l) return;
+        if (e.target.closest("[data-inc]")) { l.q++; render(); }
+        else if (e.target.closest("[data-dec]")) { if (l.q > 1) l.q--; else lines.splice(Number(row.dataset.i), 1); render(); }
+        else if (e.target.closest("[data-rm]")) { lines.splice(Number(row.dataset.i), 1); render(); }
+      });
+      box.addEventListener("change", (e) => {
+        const row = e.target.closest(".wh-sl-line"); if (!row) return;
+        const l = lines[Number(row.dataset.i)]; if (!l) return;
+        if (e.target.classList.contains("sl-qin")) { l.q = Math.max(1, Math.floor(Number(e.target.value) || 1)); render(); }
+      });
+      box.addEventListener("input", (e) => {
+        if (!e.target.classList.contains("sl-pin")) return;
+        const row = e.target.closest(".wh-sl-line"); const l = lines[Number(row.dataset.i)]; if (!l) return;
+        l.price = Math.max(0, Number(e.target.value) || 0);
+        row.querySelector(".wh-sl-t").textContent = whGBP(l.q * l.price);
+        totals();
+      });
+      whEl("sl-disc").addEventListener("input", totals);
+
+      // customer
+      whEl("sl-walkin").addEventListener("click", () => { whEl("sl-name").value = "Walk-in customer"; });
+      whEl("sl-name").addEventListener("change", () => {
+        const c = known.get(whEl("sl-name").value.trim().toLowerCase());
+        if (c) { if (!whEl("sl-phone").value) whEl("sl-phone").value = c.phone || ""; if (!whEl("sl-email").value) whEl("sl-email").value = c.email || ""; }
+      });
+
+      // camera
+      const startCam = async () => {
+        if (whScanStream) return;
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { msg("The camera isn't available here - use the box above.", true); return; }
+        try { whScanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); }
+        catch (e) { msg("Camera permission was not given - use the box above.", true); return; }
+        const video = whEl("wh-video");
+        if (!video) { whStopScanner(); return; }
+        whEl("sl-vwrap").hidden = false;
+        whEl("sl-cam").textContent = "Camera off";
+        try { localStorage.setItem(WH_CAM_KEY, "1"); } catch (e) { /* ignore */ }
+        video.srcObject = whScanStream;
+        try { await video.play(); } catch (e) { /* ignore */ }
+        const detector = ("BarcodeDetector" in window) ? new BarcodeDetector({ formats: ["qr_code"] }) : null;
+        const canvas = document.createElement("canvas"), ctx = canvas.getContext("2d", { willReadFrequently: true });
+        let busy = false;
+        whScanTimer = setInterval(async () => {
+          if (busy || !video.videoWidth) return;
+          busy = true;
+          try {
+            let text = null;
+            if (detector) { const r = await detector.detect(video); if (r && r.length) text = r[0].rawValue; }
+            else if (typeof jsQR === "function") {
+              const w = Math.min(640, video.videoWidth), h = Math.round(video.videoHeight * (w / video.videoWidth));
+              canvas.width = w; canvas.height = h; ctx.drawImage(video, 0, 0, w, h);
+              const r = jsQR(ctx.getImageData(0, 0, w, h).data, w, h); if (r) text = r.data;
+            }
+            if (text) handleScan(text);
+          } catch (e) { /* keep trying */ }
+          busy = false;
+        }, 300);
+      };
+      const stopCam = () => {
+        whStopScanner();
+        if (whEl("sl-vwrap")) whEl("sl-vwrap").hidden = true;
+        if (whEl("sl-cam")) whEl("sl-cam").textContent = "Camera";
+        try { localStorage.removeItem(WH_CAM_KEY); } catch (e) { /* ignore */ }
+      };
+      whEl("sl-cam").addEventListener("click", () => { if (whScanStream) stopCam(); else startCam(); });
+      let wantCam = false; try { wantCam = localStorage.getItem(WH_CAM_KEY) === "1" && (navigator.maxTouchPoints || 0) > 0; } catch (e) { /* ignore */ }
+      if (wantCam) startCam();
+
+      // finish
+      whEl("sl-done").addEventListener("click", () => {
+        if (!lines.length) { msg("Scan at least one item first.", true); return; }
+        const name = whEl("sl-name").value.trim();
+        if (!name) { msg("Enter the customer name (or tap Walk-in).", true); whEl("sl-name").focus(); return; }
+        const qty = whQtyMap();
+        const over = lines.filter((l) => l.q > (qty[l.pid] || 0)).map((l) => prod(l.pid).name);
+        if (over.length && !confirm("Not enough in stock for: " + over.join(", ") + ".\nComplete the sale anyway? The count will go below zero.")) return;
+        const free = lines.filter((l) => !(l.price > 0)).map((l) => prod(l.pid).name);
+        if (free.length && !confirm("No price entered for: " + free.join(", ") + ".\nComplete the sale with these at £0.00?")) return;
+        const by = whEl("sl-by").value; whSetWho(by);
+        const sale = whCreateSale({
+          lines: lines.map((l) => { const p = prod(l.pid); return { pid: l.pid, q: l.q, price: l.price, code: p.code, name: p.name, cost: (p.cost === null || p.cost === undefined || p.cost === "") ? null : Number(p.cost) }; }),
+          name: name, phone: whEl("sl-phone").value.trim(), email: whEl("sl-email").value.trim(),
+          disc: Number(whEl("sl-disc").value) || 0, pay: whEl("sl-pay").value, note: whEl("sl-note").value.trim(), by: by,
+        });
+        whCloseModal();
+        whCommit(); whRenderSalesIfOpen();
+        whOpenReceipt(sale.id, true);
+      });
+      render();
+      codeIn.focus();
+    },
+    true
+  );
+}
+
+// ---------- Sales page: takings, cost, profit ----------
+const WSP = { range: "today", from: "", to: "" };
+function whRangeBounds() {
+  const t = whLocalDay(new Date().toISOString());
+  const a = t.split("-").map(Number);
+  switch (WSP.range) {
+    case "today": return [t, t];
+    case "yesterday": { const y = whAddDays(t, -1); return [y, y]; }
+    case "week": return [whAddDays(t, -6), t];
+    case "month": return [t.slice(0, 8) + "01", t];
+    case "lastmonth": {
+      const first = whLocalDay(new Date(a[0], a[1] - 2, 1).toISOString());
+      const last = whLocalDay(new Date(a[0], a[1] - 1, 0).toISOString());
+      return [first, last];
+    }
+    case "custom": return [WSP.from || "", WSP.to || ""];
+    default: return ["", ""];
+  }
+}
+function whSalesSummary(list) {
+  const x = { rev: 0, cost: 0, n: 0, units: 0, unpaid: 0, miss: 0 };
+  list.forEach((s) => {
+    x.rev += s.total; x.cost += s.cost; x.n++; x.units += whItemCount(s);
+    if (!s.paid) x.unpaid += s.total;
+    if (s.miss) x.miss++;
+  });
+  x.rev = whR2(x.rev); x.cost = whR2(x.cost); x.unpaid = whR2(x.unpaid);
+  x.profit = whR2(x.rev - x.cost);
+  x.margin = x.rev > 0 ? x.profit / x.rev : NaN;
+  return x;
+}
+function whSalesInRange() {
+  const b = whRangeBounds();
+  return WHS.sales.filter((s) => {
+    const d = whLocalDay(s.at);
+    return (!b[0] || d >= b[0]) && (!b[1] || d <= b[1]);
+  }).sort((a, c) => String(c.at).localeCompare(String(a.at)));
+}
+function whOpenSales() {
+  let el = whEl("wh-sales-panel");
+  if (!el) {
+    el = document.createElement("div"); el.id = "wh-sales-panel"; el.className = "wh-sales-panel";
+    document.body.appendChild(el);
+    document.body.classList.add("wh-noscroll");
+  }
+  whRenderSales();
+}
+function whCloseSales() {
+  const el = whEl("wh-sales-panel");
+  if (el) el.remove();
+  document.body.classList.remove("wh-noscroll");
+}
+function whRenderSalesIfOpen() { if (whEl("wh-sales-panel")) whRenderSales(); }
+function whRenderSales() {
+  const el = whEl("wh-sales-panel");
+  if (!el) return;
+  const all = whSalesInRange();
+  const active = all.filter((s) => !s.void);
+  const cancelled = all.length - active.length;
+  const sum = whSalesSummary(active);
+  const b = whRangeBounds();
+  const e = escapeHtml;
+
+  const byDay = {};
+  active.forEach((s) => { const d = whLocalDay(s.at); (byDay[d] = byDay[d] || []).push(s); });
+  const dayRows = Object.keys(byDay).sort().reverse().map((d) => {
+    const x = whSalesSummary(byDay[d]);
+    return '<tr><td>' + e(whNiceDay(d)) + '</td><td class="r">' + whGBP(x.rev) + '</td><td class="r">' + whGBP(x.cost) + '</td><td class="r' + (x.profit < 0 ? " neg" : "") + '">' + whGBP(x.profit) + '</td><td class="r">' + whPct(x.margin) + '</td><td class="r">' + x.n + '</td></tr>';
+  }).join("");
+
+  const prods = {};
+  active.forEach((s) => s.lines.forEach((l) => {
+    const x = prods[l.pid] || (prods[l.pid] = { code: l.code, name: l.name, q: 0, rev: 0, cost: 0 });
+    x.q += l.q; x.rev += l.q * l.price; x.cost += l.q * (Number(l.cost) || 0);
+  }));
+  const prodRows = Object.keys(prods).map((k) => prods[k]).sort((a, c) => c.rev - a.rev).slice(0, 10).map((x) =>
+    '<tr><td><b>' + e(x.code) + '</b> ' + e(x.name) + '</td><td class="r">' + x.q + '</td><td class="r">' + whGBP(x.rev) + '</td><td class="r">' + whGBP(x.rev - x.cost) + '</td></tr>').join("");
+
+  const custs = {};
+  active.forEach((s) => {
+    const k = (s.cust.name || "").toLowerCase();
+    const x = custs[k] || (custs[k] = { name: s.cust.name, n: 0, rev: 0 });
+    x.n++; x.rev += s.total;
+  });
+  const custRows = Object.keys(custs).map((k) => custs[k]).sort((a, c) => c.rev - a.rev).slice(0, 10).map((x) =>
+    '<tr><td>' + e(x.name) + '</td><td class="r">' + x.n + '</td><td class="r">' + whGBP(x.rev) + '</td></tr>').join("");
+
+  const saleRows = all.map((s) =>
+    '<button type="button" class="wh-sale-row' + (s.void ? " void" : "") + '" data-s="' + s.id + '">' +
+    '<span class="a"><b>' + e(s.no) + '</b> ' + e(new Date(s.at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })) + '</span>' +
+    '<span class="b">' + e(s.cust.name) + ' &middot; ' + whItemCount(s) + ' item' + (whItemCount(s) === 1 ? "" : "s") + '</span>' +
+    '<span class="c">' + whGBP(s.total) + '</span>' +
+    '<span class="d ' + (s.void ? "cancel" : (s.paid ? "paid" : "due")) + '">' + (s.void ? "Cancelled" : (s.paid ? "Paid" : "Unpaid")) + '</span></button>').join("");
+
+  const chip = (k, t) => '<button type="button" class="chip' + (WSP.range === k ? " active" : "") + '" data-r="' + k + '">' + t + '</button>';
+  el.innerHTML =
+    '<div class="wh-sp-inner">' +
+      '<div class="wh-sp-head"><button type="button" class="btn" id="sp-back">&larr; Stock</button><h2>Sales</h2></div>' +
+      '<div class="wh-sp-actions"><button type="button" class="btn primary" id="sp-sell">Sell</button>' +
+      '<button type="button" class="btn" id="sp-export">Export CSV</button>' +
+      '<button type="button" class="btn" id="sp-set">Receipt details</button></div>' +
+      '<div class="wh-statusline"><span id="sp-status">' + e(WHS.status) + '</span> <button type="button" class="wh-link" id="sp-sync">Sync now</button></div>' +
+      '<div class="chips">' + chip("today", "Today") + chip("yesterday", "Yesterday") + chip("week", "Last 7 days") + chip("month", "This month") + chip("lastmonth", "Last month") + chip("all", "All time") + '</div>' +
+      '<div class="wh-sp-dates"><label>From <input type="date" id="sp-from" value="' + e(b[0]) + '" /></label><label>To <input type="date" id="sp-to" value="' + e(b[1]) + '" /></label></div>' +
+      '<div class="wh-summary">' +
+        '<div class="wh-stat"><b>' + whGBP(sum.rev) + '</b><span>Sales (takings)</span></div>' +
+        '<div class="wh-stat"><b>' + whGBP(sum.cost) + '</b><span>Cost of goods</span></div>' +
+        '<div class="wh-stat' + (sum.profit < 0 ? " warn" : "") + '"><b>' + whGBP(sum.profit) + '</b><span>Profit</span></div>' +
+        '<div class="wh-stat"><b>' + whPct(sum.margin) + '</b><span>Profit margin</span></div>' +
+        '<div class="wh-stat"><b>' + sum.n + '</b><span>Sales made</span></div>' +
+        '<div class="wh-stat"><b>' + sum.units + '</b><span>Items sold</span></div>' +
+        '<div class="wh-stat' + (sum.unpaid > 0 ? " warn" : "") + '"><b>' + whGBP(sum.unpaid) + '</b><span>Not paid yet</span></div>' +
+      '</div>' +
+      (sum.miss ? '<div class="wh-sp-note">' + sum.miss + ' sale' + (sum.miss === 1 ? " includes" : "s include") + ' an item with no cost price, so the profit shown is higher than the real figure.</div>' : "") +
+      (cancelled ? '<div class="wh-sp-note">' + cancelled + ' cancelled sale' + (cancelled === 1 ? " is" : "s are") + ' left out of these figures.</div>' : "") +
+      (active.length ?
+        '<h3 class="wh-h3">By day</h3><div class="wh-tablewrap"><table class="wh-tbl"><thead><tr><th>Day</th><th class="r">Sales</th><th class="r">Cost</th><th class="r">Profit</th><th class="r">Margin</th><th class="r">Sales made</th></tr></thead><tbody>' + dayRows +
+        '<tr class="tot"><td>Total</td><td class="r">' + whGBP(sum.rev) + '</td><td class="r">' + whGBP(sum.cost) + '</td><td class="r">' + whGBP(sum.profit) + '</td><td class="r">' + whPct(sum.margin) + '</td><td class="r">' + sum.n + '</td></tr></tbody></table></div>' +
+        '<div class="wh-sp-cols"><div><h3 class="wh-h3">Best sellers</h3><div class="wh-tablewrap"><table class="wh-tbl"><thead><tr><th>Product</th><th class="r">Sold</th><th class="r">Takings</th><th class="r">Profit</th></tr></thead><tbody>' + prodRows + '</tbody></table></div></div>' +
+        '<div><h3 class="wh-h3">Customers</h3><div class="wh-tablewrap"><table class="wh-tbl"><thead><tr><th>Name</th><th class="r">Sales</th><th class="r">Spent</th></tr></thead><tbody>' + custRows + '</tbody></table></div></div></div>'
+        : '<div class="empty-state"><div class="big">&#129534;</div><h2>No sales in this period</h2><p>Tap Sell to scan items and make one.</p></div>') +
+      (all.length ? '<h3 class="wh-h3">Every sale in this period</h3><div class="wh-sale-list" id="sp-list">' + saleRows + '</div>' : "") +
+    '</div>';
+
+  whEl("sp-back").addEventListener("click", whCloseSales);
+  whEl("sp-sell").addEventListener("click", whOpenSell);
+  whEl("sp-export").addEventListener("click", () => whExportSalesCsv(all));
+  whEl("sp-set").addEventListener("click", whOpenReceiptSettings);
+  whEl("sp-sync").addEventListener("click", whSync);
+  el.querySelectorAll("[data-r]").forEach((c) => c.addEventListener("click", () => { WSP.range = c.dataset.r; whRenderSales(); }));
+  const dateChanged = () => { WSP.range = "custom"; WSP.from = whEl("sp-from").value; WSP.to = whEl("sp-to").value; whRenderSales(); };
+  whEl("sp-from").addEventListener("change", dateChanged);
+  whEl("sp-to").addEventListener("change", dateChanged);
+  const list = whEl("sp-list");
+  if (list) list.addEventListener("click", (ev) => { const r = ev.target.closest("[data-s]"); if (r) whOpenReceipt(r.dataset.s, false); });
+}
+
+function whExportSalesCsv(list) {
+  const esc = (v) => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+  const rows = [["Sale", "Date", "Time", "Customer", "Phone", "Email", "Code", "Product", "Qty", "Price each", "Line total", "Cost each", "Line cost", "Sale discount", "Sale total", "VAT", "Payment", "Status", "Sold by"]];
+  list.slice().sort((a, c) => String(a.at).localeCompare(String(c.at))).forEach((s) => {
+    s.lines.forEach((l, i) => {
+      const d = new Date(s.at);
+      rows.push([s.no, whLocalDay(s.at), d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }), s.cust.name, s.cust.phone, s.cust.email,
+        l.code, l.name, l.q, l.price.toFixed(2), whR2(l.q * l.price).toFixed(2), l.cost == null ? "" : Number(l.cost).toFixed(2), l.cost == null ? "" : whR2(l.q * l.cost).toFixed(2),
+        i === 0 ? s.disc.toFixed(2) : "", i === 0 ? s.total.toFixed(2) : "", "N/A", s.paid ? (s.pay || "Paid") : "Not paid", s.void ? "Cancelled" : "OK", s.by]);
+    });
+  });
+  const blob = new Blob(["﻿" + rows.map((r) => r.map(esc).join(",")).join("\r\n")], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sales-" + new Date().toISOString().slice(0, 10) + ".csv";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+function whOpenReceiptSettings() {
+  const st = whSettings();
+  whModal(
+    '<h2>Receipt details</h2><div class="modal-sub">Shown at the top and bottom of every receipt. Marie and you share these.</div>' +
+    '<form id="rs-form">' +
+      '<div class="field"><label for="rs-biz">Business name</label><input id="rs-biz" maxlength="60" value="' + escapeHtml(st.biz) + '" /></div>' +
+      '<div class="field"><label for="rs-lines">Address, phone, website (one per line)</label><textarea id="rs-lines" rows="4" maxlength="300">' + escapeHtml(st.lines) + '</textarea></div>' +
+      '<div class="field"><label for="rs-foot">Message at the bottom</label><input id="rs-foot" maxlength="120" value="' + escapeHtml(st.footer) + '" /></div>' +
+      '<div class="modal-actions"><button type="submit" class="btn primary">Save</button></div></form>',
+    () => {
+      whEl("rs-form").addEventListener("submit", (ev) => {
+        ev.preventDefault();
+        WHS.settings = { biz: whEl("rs-biz").value.trim() || "Made With Love", lines: whEl("rs-lines").value.trim(), footer: whEl("rs-foot").value.trim(), updated: whNow() };
+        WHS.dirty.products = true;
+        whCloseModal(); showBanner("Receipt details saved."); whCommit();
+      });
+    }
+  );
+}
+
+// summary kept for the website's Staff page (read only)
+function whSalesSnapshot() {
+  const sorted = WHS.sales.slice().sort((a, b) => String(a.at).localeCompare(String(b.at)) || String(a.id).localeCompare(String(b.id)));
+  const days = {};
+  sorted.forEach((s) => {
+    if (s.void) return;
+    const d = whLocalDay(s.at);
+    const x = days[d] || (days[d] = { n: 0, rev: 0, cost: 0, units: 0, unpaid: 0, miss: 0 });
+    x.n++; x.rev = whR2(x.rev + s.total); x.cost = whR2(x.cost + s.cost); x.units += whItemCount(s);
+    if (!s.paid) x.unpaid = whR2(x.unpaid + s.total);
+    if (s.miss) x.miss++;
+  });
+  const recent = sorted.slice().reverse().slice(0, 60).map((s) => ({
+    no: s.no, at: s.at, name: (s.cust && s.cust.name) || "", total: s.total, cost: s.cost, paid: !!s.paid, pay: s.pay || "", void: !!s.void,
+    items: s.lines.map((l) => l.code + " x" + l.q).join(", "),
+  }));
+  return { days: days, recent: recent };
 }
 
 window.addEventListener("online", () => { if (WHS.unlocked) whSync(); });
